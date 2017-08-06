@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Usage: $pip install .
+
+from setuptools import setup, find_packages
+
+with open('lsys//__init__.py') as info_file:
+    version = author = email = ""
+    for line in info_file:
+        if line.startswith('__version__'):
+            version = line.split("=")[1].replace("'","").strip()
+        elif line.startswith('__author__'):
+            author = line.strip().split("=")[1].replace("'","").strip()
+        elif line.startswith('__email__'):
+            email = line.strip().split("=")[1].replace("'","").strip()
+
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
+PACKAGE_DATA = {'lsys.tests.baseline_images.test_viz': ['*png']}
+
+requirements = ['numpy', 'matplotlib']
+
+test_requirements = ['pytest>=3.1', 'pytest-mpl>=0.8']
+
+setup(
+    name='lsys',
+    version=version,
+    description="Create and visualize Lindenmayer systems",
+    long_description=readme,
+    author=author,
+    author_email=email,
+    url='https://github.com/austinorr/lsys',
+    packages=find_packages(),
+    package_data=PACKAGE_DATA,
+    include_package_data=True,
+    install_requires=requirements,
+    extras_require={'testing': test_requirements},
+    license="BSD license",
+    zip_safe=False,
+    keywords=['l-systems', 'lindenmayer', 'fractal'],
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Natural Language :: English',
+        "Programming Language :: Python :: 2",
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+    ],
+    test_suite='lsys.tests',
+    tests_require=test_requirements
+)
