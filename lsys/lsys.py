@@ -12,12 +12,12 @@ class Lsys(object):
     """
     This object combines the basic language and directives
     necessary to construct a Lindenmayer system, compute
-    the coordinates based on the directives, and plot the 
+    the coordinates based on the directives, and plot the
     resulting figure.
 
     Attributes
     ----------
-    string : 
+    string :
     depth
     coord
     x
@@ -50,7 +50,7 @@ class Lsys(object):
         Parameters
         ----------
 
-        
+
 
 
         """
@@ -60,7 +60,7 @@ class Lsys(object):
 
         if rule is None:
             raise Exception("must enter `rule` string or mapping")
-        
+
         self._axiom = axiom.upper()
         self._rule = self.clean_rule(rule)
         self._depth = depth
@@ -270,13 +270,13 @@ class Lsys(object):
     @property
     def string(self):
         if not self._string or self._string_stale:
-            self._string = self.expand(self.axiom, self.rule, 
-                                       self.depth, self.bar, 
+            self._string = self.expand(self.axiom, self.rule,
+                                       self.depth, self.bar,
                                        self.memory_check,
                                        )
             self._string_stale = False
         return self._string
-    
+
     @property
     def vocab(self):
         return self._vocab
@@ -318,17 +318,17 @@ class Lsys(object):
         for k, v in self.rule.items():
             vocab += k
             vocab += v
-        vocab += "".join([self.axiom, self.forward, self.goto, 
+        vocab += "".join([self.axiom, self.forward, self.goto,
                          self.right, self.left, self.bar, self.ignore])
-        
+
         return set(vocab.replace(" ", ""))
 
     def _build_commands(self):
         """Compile all chars used in the vocabulary of the fractal"""
         cmd = ""
-        cmd += "".join([self.forward, self.goto, 
+        cmd += "".join([self.forward, self.goto,
                          self.right, self.left, self.bar])
-        
+
         return set(cmd.replace(" ", ""))
 
 
@@ -344,10 +344,10 @@ class Lsys(object):
         Parameters
         ----------
         rule : string or dict
-            a mapping for expanding characters of the string. 
-            If a string is used, the format requires a valid 
-            separator between key and value. These include ":", 
-            "=", "-->", "->", "=>". If multiple rules are provided, 
+            a mapping for expanding characters of the string.
+            If a string is used, the format requires a valid
+            separator between key and value. These include ":",
+            "=", "-->", "->", "=>". If multiple rules are provided,
             they must be separated by ";" or ",".
 
 
@@ -381,7 +381,7 @@ class Lsys(object):
                     rule = rule.replace(d, ",")
 
             rules_tmp = rule.split(",")
-            
+
             for r in rules_tmp:
                 k, v = r.split("=")
                 clean_rule[k.strip()] = v.strip()
@@ -400,13 +400,13 @@ class Lsys(object):
         Parameters
         ----------
         axiom : string
-            the starting string 
+            the starting string
         rule : dict
             the rules for expanding the characters of the string
         depth : integer
             the number of times to perform the expansion
         bar : string, optional (default = "|")
-            the character to indicate that a calculation should be done 
+            the character to indicate that a calculation should be done
             by the parser based on the present depth of the string expansion
         memory_check : bool, optional (default = True)
             stop expanding when things get too large
@@ -440,14 +440,14 @@ class Lsys(object):
 
 
     def _compute_bezier(self, bezier_weight=None, segs=100):
-        """compute 
+        """compute
         """
 
         self._bezier_x, self._bezier_y = bezier.bezier_xy(self.x, self.y, weight=bezier_weight, angle=self.da, segs=segs)
         # self._bezier_coords = algo.xy_to_coords(self._bezier_x, self._bezier_y)
-        
+
         return self._bezier_x, self._bezier_y
-        
+
 
     def compute_coords(self):
         """
@@ -456,7 +456,7 @@ class Lsys(object):
         Parameters
         ----------
         self : lsys.Lsys()
-            uses most of the attributes from the class constructor 
+            uses most of the attributes from the class constructor
             to parse the expanded string and turn it into coordinates
             for a plotter.
 
@@ -496,7 +496,7 @@ class Lsys(object):
         stack = []
         bez_stack = [([x,y],[sx,sy])] #TODO: can this be a single point, rather than a segment?
         depths = []
-        num = 0 
+        num = 0
         found = False
         for c in string:
             # if not commands_have_digits and c.isdigit():
@@ -530,7 +530,7 @@ class Lsys(object):
 
                     x = sx
                     y = sy
-                    
+
                     found = True
 
                 if c in (right + left):
@@ -543,7 +543,7 @@ class Lsys(object):
                 elif c == '[':
                     # if x_y:
                         # bez_stack.append(x_y[-1])
-                    
+
                     stack.append((x, y, a + (algo.add_noise(unoise) * numpy.radians(5))))
 
                 elif c == ']':
@@ -572,7 +572,7 @@ class Lsys(object):
         return numpy.array(x_y), numpy.array(depths)
 
 
-    def plot_bezier(self, bezier_weight=None, segs=100, as_lc=False, 
+    def plot_bezier(self, bezier_weight=None, segs=100, as_lc=False,
                     pad=5, square=True, ax=None, **kwargs):
 
         _, _ = self._compute_bezier(bezier_weight=None, segs=100)
@@ -581,9 +581,9 @@ class Lsys(object):
             warnings.warn("The `as_lc` parameter was ignored. Bezier LineCollections "
                 "will be supported in a future update."
                 )
-            # return viz.plot_line_collection(self._bezier_coords, pad=pad, square=square, 
+            # return viz.plot_line_collection(self._bezier_coords, pad=pad, square=square,
                                             # ax=ax, **kwargs)
-        
+
         return viz.plot(self._bezier_x, self._bezier_y, pad=pad, square=square, ax=ax, **kwargs)
 
 
@@ -593,4 +593,4 @@ class Lsys(object):
 
         return viz.plot(self.x, self.y, pad=pad, square=square, ax=ax, **kwargs)
 
- 
+

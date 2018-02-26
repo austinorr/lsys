@@ -5,7 +5,7 @@ matrix:
     - python: 2.7
       env:
         - COVERAGE=false
-        - TESTERS="pytest coverage" 
+        - TESTERS="pytest coverage"
         - ARGS="--mpl --verbose"
     - python: 3.4
       env:
@@ -31,15 +31,14 @@ before_install:
   - ./miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda update --yes conda
-  - conda install --yes nomkl
 
 # We just set up a conda environment with the right Python version.
 # This should not need changing.
 install:
-  - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION numpy matplotlib docopt requests pyyaml nose
+  - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION nomkl numpy matplotlib
   - source activate test
   - conda install --yes --channel=conda-forge ${TESTERS}
-  - pip install pytest-mpl>=0.8 
+  - pip install pytest-mpl>=0.8
   - pip install codecov
   - pip install .
 
