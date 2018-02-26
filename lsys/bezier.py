@@ -1,17 +1,15 @@
 """
 This module has functions helpful in the construction of general
-bezier curves, as well as fitting cubic bezier curves between 
-vertices calculated by the :class:``lsys.Lsys`` 
+bezier curves, as well as fitting cubic bezier curves between
+vertices calculated by the :class:``lsys.Lsys``
 
-In addition, this module contains the code used to determine the 
+In addition, this module contains the code used to determine the
 symetric weight factor needed to determine the position of control
 points that form near-circular curves between three points with
-an arbitrary interior angle, buiding on the work documented 
+an arbitrary interior angle, buiding on the work documented
 `here <http://spencermortensen.com/articles/bezier-circle/>`_.
-
-
-
 """
+
 from __future__ import division
 import numpy
 
@@ -143,7 +141,7 @@ def bezier(points, segs=100):
     dims = points.shape[1]
 
     # increment num such that final line segments will be equal to `segs`
-    num = segs+1
+    num = segs + 1
 
     n = len(points)
     t = numpy.linspace(0, 1, num=num)
@@ -152,6 +150,7 @@ def bezier(points, segs=100):
         curve += numpy.outer(poly(n - 1, i)(t), pt)
 
     return curve
+
 
 def circular_weight(angle):
     """This function utilizes the precomputed circular bezier function
@@ -181,23 +180,24 @@ def circular_weight(angle):
     """
     z = numpy.array([
         -2.45143082907626980583458614241573e-24,
-         1.58856196152315352138612607918623e-21,
+        1.58856196152315352138612607918623e-21,
         -5.03264989277462933391916020538014e-19,
-         8.57954915199159887348249578203777e-17,
+        8.57954915199159887348249578203777e-17,
         -1.09982713519619074150585319501519e-14,
-         6.42175701661701683377126465867012e-13,
+        6.42175701661701683377126465867012e-13,
         -1.95012445981222027957307425487916e-10,
-         6.98338125134285339870680633234242e-10,
+        6.98338125134285339870680633234242e-10,
         -1.27018636324842636571531492850617e-05,
-         5.58069196465371404519196542326487e-08,
-         6.66666581437823202449521886592265e-01
-         ])
+        5.58069196465371404519196542326487e-08,
+        6.66666581437823202449521886592265e-01
+    ])
 
     p = numpy.poly1d(z)
 
     return p(angle)
 
-def find_circular_weight(angle,  guess=.5, tol=1e-9, max_iters=50, r=10, segs=100):
+
+def find_circular_weight(angle,  guess=0.5, tol=1e-9, max_iters=50, r=10, segs=100):
     """
     Finds weight factor for bezier control points such that the `angle`
     QRS will be filled with cubic bezier curve approximating a circle
@@ -206,13 +206,19 @@ def find_circular_weight(angle,  guess=.5, tol=1e-9, max_iters=50, r=10, segs=10
     Parameters
     ----------
     angle : float
-        the interial angle in degrees to traverse with a bezier curve
-    guess : float
+        the turn angle in degrees. e.g., if turn angle is 30 degrees, then the angle
+        that needs to be spanned by the curve is 150 degrees.
+    guess : float, optional (default=0.5)
         the initial value for the bisection search
-    tol : float
+    tol : float, optional (default=1e-9)
         the tolerance for ceasing bisection search
-    max_iters : int
+    max_iters : int, optional (default=50)
         the maximum iterations for bisection search
+    r : float, optional (default=10)
+        the radius for the circle. the larger this value, the more precise the
+        weight will be since tolerance is absolute.
+    segs : int, optional (defualt=100)
+        number of points to consider on the circle, and bezier points to compute.
 
     Returns
     -------
@@ -229,6 +235,20 @@ def find_circular_weight(angle,  guess=.5, tol=1e-9, max_iters=50, r=10, segs=10
     ----------
     http://spencermortensen.com/articles/bezier-circle/
 
+
+               ^
+               | /
+               |/   \
+    h -- -- -- R    angle
+              / \   /
+             / | \
+            /  |  \
+           /  o o  \
+          /o   |   o\
+         /o    |    o\
+    0 - Q o----+----o S -- >
+               0
+
     """
 
     if not 0 < angle < 180:
@@ -238,50 +258,54 @@ def find_circular_weight(angle,  guess=.5, tol=1e-9, max_iters=50, r=10, segs=10
         raise ValueError('`guess` must be between 0 and 1, exclusive')
 
     deg = (180 - angle) / 2
-    theta = numpy.deg2rad(deg) #half of the inter angle formed by QRS
+    theta = numpy.deg2rad(deg)  # half of the interior angle formed by QRS
 
     r = r
-    h = r*numpy.cos(theta)/numpy.tan(theta) # y location of acute angle QRS apex
-    x = 0 # x location of acute angle QRS apex
-    kc = -h * numpy.tan(theta) * numpy.tan(theta) # y value of circle center
-    # hc = 0
-    xc = h * numpy.tan(theta) # x value of circle and line RS tangent point
-    # r = h * numpy.tan(theta) / numpy.cos(theta) # value of circle radius
+    # y location of acute angle QRS apex
+    h = r * numpy.cos(theta) / numpy.tan(theta)
+    x = 0  # x location of acute angle QRS apex
+    kc = -h * numpy.tan(theta) * numpy.tan(theta)  # y value of circle center
+    xc = h * numpy.tan(theta)  # x value of circle and line RS tangent point
 
-    pt0 = numpy.array([-xc, 0]) #position of point Q
-    pt2 = numpy.array([xc, 0]) # position of point S
-    ptm = numpy.array([x, h]) # position of apex point R
+    pt0 = numpy.array([-xc, 0])  # position of point Q
+    pt2 = numpy.array([xc, 0])  # position of point S
+    ptm = numpy.array([x, h])  # position of apex point R
 
-    a = 1 # upper bound for bisection search
-    b = 0 # lower bound for bisection search
+    a = 1  # upper bound for bisection search
+    b = 0  # lower bound for bisection search
 
-    guess_inp = guess
-    i = 0
-    while i < max_iters:
+    guess_gen = gen_new_guess(guess, pt0, pt2, ptm, kc, r, a, b, segs)
+    for i in range(max_iters):
 
-        pc1 = ctrl_pts(pt0, ptm, guess) # form first bezier control point along QR
-        pc2 = ctrl_pts(pt2, ptm, guess) # form second bezier control point along RS
-        t = bezier([pt0, pc1, pc2, pt2], segs) # build cubic bezier curve with 10000 segments
-        radial_dist = numpy.sqrt(numpy.sum((t - [0, kc])**2, axis=1))   # determine radial distance from each
-                                                                        # bezier point to the circle center
-        error_np = radial_dist - r # radial distance from circle to bezier curve
-        tmax = numpy.abs(error_np.max())
-        tmin = numpy.abs(error_np.min())
-        error = (tmax - tmin) # minimize the range with bisection search
-
+        guess, error_np, error, a, b = next(guess_gen)
         if -tol < error < tol:
             return guess, error_np, error, i
 
-        else:
-            if error > 0:
-                a = guess
-            if error < 0:
-                b = guess
-        guess = (a + b) / 2
-        i += 1
-
     return guess, error_np, error, i
 
+
+def gen_new_guess(guess, pt0, pt2, ptm, kc, r, a, b, segs):
+    """Generator to produce the next guess in the bisection search sequence"""
+    while True:
+        pc1 = ctrl_pts(pt0, ptm, guess)  # first bezier control point along QR
+        pc2 = ctrl_pts(pt2, ptm, guess)  # second bezier control point along RS
+        # build cubic bezier curve with `segs` segments
+        t = bezier([pt0, pc1, pc2, pt2], segs)
+        # determine radial distance from each bezier point to the circle center
+        radial_dist = numpy.sqrt(numpy.sum((t - [0, kc])**2, axis=1))
+        # radial distance from circle to bezier curve
+        error_np = radial_dist - r
+        tmax = numpy.abs(error_np.max())
+        tmin = numpy.abs(error_np.min())
+        error = (tmax - tmin)  # minimize the range with bisection search
+
+        yield guess, error_np, error, a, b
+
+        if error > 0:
+            a = guess
+        else:
+            b = guess
+        guess = (a + b) / 2
 
 
 def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
@@ -296,7 +320,7 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
     y : list-like
         a 1D array of y values
     weight : float, optional (default = None)
-        Weight given to intermediate bezier control points. If 
+        Weight given to intermediate bezier control points. If
         `None` then the weight will be determined by the `angle`
     angle : float, optional (default = 90)
         the interior angle for the bezier sections to traverse
@@ -322,12 +346,12 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
 
     temp = numpy.vstack(([xmid], [ymid])).T
 
-    rng = numpy.arange(0, len(temp)-1, 2)
-    tx=[]
-    ty=[]
-    last_pt=None
+    rng = numpy.arange(0, len(temp) - 1, 2)
+    tx = []
+    ty = []
+    last_pt = None
     for i in rng:
-        pt=temp[i:i + 3]
+        pt = temp[i:i + 3]
         if i > 0 and not numpy.array_equal(pt[0], last_pt):
             continue
         c1 = ctrl_pts(pt[0], pt[1], weight)
@@ -342,7 +366,7 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
 
     if keep_ends:
 
-        tx = numpy.concatenate( (x[:1], tx, x[-1:]) )
-        ty = numpy.concatenate( (y[:1], ty, y[-1:]) )
+        tx = numpy.concatenate((x[:1], tx, x[-1:]))
+        ty = numpy.concatenate((y[:1], ty, y[-1:]))
 
     return tx, ty

@@ -56,54 +56,111 @@ def test_lsys_bezier_poly(n, k, expected):
 
 @pytest.mark.parametrize(('pts', 'segs', 'expected'), [
     (numpy.array([
-        [0, 0], 
+        [0, 0],
         [1, 1],
         [2, 0]
-        ]), 
-    5, 
-    numpy.array([
-        [ 0.  ,  0.  ],
-        [ 0.4 ,  0.32],
-        [ 0.8 ,  0.48],
-        [ 1.2 ,  0.48],
-        [ 1.6 ,  0.32],
-        [ 2.  ,  0.  ]
+    ]),
+        5,
+        numpy.array([
+            [0.,  0.],
+            [0.4,  0.32],
+            [0.8,  0.48],
+            [1.2,  0.48],
+            [1.6,  0.32],
+            [2.,  0.]
         ])
     ),
     (numpy.array([
-        [0, 0], 
+        [0, 0],
         [1, 1],
         [1, 1],
         [2, 0],
-        ]),
-    5,
-    numpy.array([
-        [ 0.   ,  0.   ],
-        [ 0.496,  0.48 ],
-        [ 0.848,  0.72 ],
-        [ 1.152,  0.72 ],
-        [ 1.504,  0.48 ],
-        [ 2.   ,  0.   ]
+    ]),
+        5,
+        numpy.array([
+            [0.,  0.],
+            [0.496,  0.48],
+            [0.848,  0.72],
+            [1.152,  0.72],
+            [1.504,  0.48],
+            [2.,  0.]
         ])
     ),
     (numpy.array([
-        [0, 0, 0], 
+        [0, 0, 0],
         [.5, 1, 2],
         [2, 0, 0],
-        ]),
-    5,
-    numpy.array([
-        [ 0.  ,  0.  ,  0.  ],
-        [ 0.24,  0.32,  0.64],
-        [ 0.56,  0.48,  0.96],
-        [ 0.96,  0.48,  0.96],
-        [ 1.44,  0.32,  0.64],
-        [ 2.  ,  0.  ,  0.  ]
+    ]),
+        5,
+        numpy.array([
+            [0.,  0.,  0.],
+            [0.24,  0.32,  0.64],
+            [0.56,  0.48,  0.96],
+            [0.96,  0.48,  0.96],
+            [1.44,  0.32,  0.64],
+            [2.,  0.,  0.]
         ])
     )
 ])
 def test_bezier(pts, segs, expected):
     res = bezier.bezier(pts, segs)
+    numpy.testing.assert_allclose(res, expected)
+
+
+@pytest.mark.parametrize(('keep', 'weight', 'expected'), [
+    (True, None, (
+        numpy.array([
+            0.,
+            0.5,  0.68347576,
+            0.89173788,
+            1.10826212,
+            1.31652424,
+            1.5,
+            2.]),
+        numpy.array([
+            0.,
+            0.5,
+            0.63245961,
+            0.69868941,
+            0.69868941,
+            0.63245961,
+            0.5,
+            0.]))),
+    (False, None, (
+        numpy.array([
+            0.5,
+            0.68347576,
+            0.89173788,
+            1.10826212,
+            1.31652424,
+            1.5
+        ]),
+        numpy.array([
+            0.5,
+            0.63245961,
+            0.69868941,
+            0.69868941,
+            0.63245961,
+            0.5]))
+     ),
+    (True, 0.5, (
+        numpy.array([0.,  0.5,  0.676,  0.888,  1.112,  1.324,  1.5,  2.]),
+        numpy.array([0.,  0.5,  0.62,  0.68,  0.68,  0.62,  0.5,  0.]))),
+    (False, 0.5, (
+        numpy.array([0.5,  0.676,  0.888,  1.112,  1.324,  1.5]),
+        numpy.array([0.5,  0.62,  0.68,  0.68,  0.62,  0.5]))
+     ),
+
+])
+def test_bezier_xy(keep, weight, expected):
+    pts = numpy.array([
+        [0, 0],
+        [1, 1],
+        [1, 1],
+        [2, 0],
+    ])
+    res = bezier.bezier_xy(pts[:, 0], pts[:, 1],
+                           weight=weight, segs=5, keep_ends=keep)
     numpy.testing.assert_allclose(res, expected)
 
 
@@ -114,10 +171,9 @@ def test_circular_weight_ref():
         0.551915024494
     """
     tol = 1e8
-    rem = bezier.circular_weight(90) - 0.55191502#4494
+    rem = bezier.circular_weight(90) - 0.55191502  # 4494
 
     assert numpy.abs(rem) < tol
-
 
 
 @pytest.mark.parametrize('angle', numpy.arange(20, 180, 5))
@@ -128,3 +184,26 @@ def test_circular_weight_equals_find_weight(angle):
     rem = cw - fcw
 
     assert numpy.abs(rem) < tol
+
+
+@pytest.mark.parametrize(
+    ('angle', 'guess'),
+    zip(
+        [0, 180, 90, 90],
+        [.5, .5, 0, 1],
+    )
+)
+def test_find_circular_weight_raises(angle, guess):
+    with pytest.raises(ValueError):
+        bezier.find_circular_weight(angle, guess)
+
+
+@pytest.mark.parametrize(('angle', 'guess', 'max_iters'), [
+    (90, .5, 1),
+    (90, .99, 1),
+    (45, .1, 1)
+])
+def test_find_circular_weight_one_iter(angle, guess, max_iters):
+    res = bezier.find_circular_weight(
+        angle, guess=guess, max_iters=max_iters)[0]
+    assert res == guess

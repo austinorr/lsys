@@ -27,11 +27,9 @@ def test_axes_object_with_None():
     assert isinstance(fig1, pyplot.Figure)
 
 
-@pytest.mark.parametrize(('listlike', 'expected'),
-                         [
+@pytest.mark.parametrize(('listlike', 'expected'), [
     ([.5, .5], np.array([.5, .5], dtype=np.float)),
-    (np.array([.5, .5], dtype=np.float),
-     np.array([.5, .5], dtype=np.float)),
+    (np.array([.5, .5], dtype=np.float), np.array([.5, .5], dtype=np.float)),
 ])
 def test_is_np(listlike, expected):
     result = validate.is_np(listlike)
