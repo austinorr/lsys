@@ -4,7 +4,7 @@ import numpy as np
 
 import pytest
 
-from .. import validate
+from lsys import validate
 
 
 def test_axes_object_invalid():

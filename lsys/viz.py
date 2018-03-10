@@ -10,7 +10,7 @@ from . import algo
 
 
 def plot(x, y, pad=5, square=False, ax=None, **kwargs):
-    """Plots 'x' vs 'y' and optionally computes the limits 
+    """Plots 'x' vs 'y' and optionally computes the limits
     of the axes based on the input data
 
     Parameters
@@ -22,9 +22,9 @@ def plot(x, y, pad=5, square=False, ax=None, **kwargs):
     pad : float or int, optional (default = 5)
         the percent spacing between plot data and axes lines. This can be used
         to zoom the plot. This is only applied if 'square' is 'True'
-        #TODO: figure out how to make this also pan the plot. 
+        #TODO: figure out how to make this also pan the plot.
     square : bool, optional (default = False)
-        whether to make the output plot a square with equal aspect 
+        whether to make the output plot a square with equal aspect
         ratios for the axes.
     ax : matplotlib.axes.Axes, optional (default = None)
         the axes artist for plotting. If `None` is given, a new figure
@@ -59,10 +59,10 @@ def plot_line_collection(coords, pad=5, square=False, ax=None, **kwargs):
         2D numpy array of points
     pad : float or int, optional (default = 5)
         the percent spacing between plot data and axes lines. This can be used
-        to zoom the plot. 
-        #TODO: figure out how to make this also pan the plot. 
+        to zoom the plot.
+        #TODO: figure out how to make this also pan the plot.
     square : bool, optional (default = False)
-        whether to make the output plot a square with equal aspect 
+        whether to make the output plot a square with equal aspect
         ratios for the axes.
     ax : matplotlib.axes.Axes, optional (default = None)
         the axes artist for plotting. If `None` is given, a new figure
@@ -88,7 +88,7 @@ def plot_line_collection(coords, pad=5, square=False, ax=None, **kwargs):
 
 
 def square_aspect(xlim, ylim):
-    """Calculates the limits to produce a square plot if all axes are 
+    """Calculates the limits to produce a square plot if all axes are
     equal scale.
 
     """
@@ -109,15 +109,15 @@ def square_aspect(xlim, ylim):
         return [x0 - fac, x1 + fac], ylim
 
 
-def pad_lims(xlim, ylim, pad=5):
-    xmin, xmax = xlim
-    ymin, ymax = ylim
-    pad = numpy.nanmax([(xmax - xmin), (ymax - ymin)]) * pad / 100
+# def pad_lims(xlim, ylim, pad=5):
+#     xmin, xmax = xlim
+#     ymin, ymax = ylim
+#     pad = numpy.nanmax([(xmax - xmin), (ymax - ymin)]) * pad / 100
 
-    xlim = [xmin - pad, xmax + pad]
-    ylim = [ymin - pad, ymax + pad]
+#     xlim = [xmin - pad, xmax + pad]
+#     ylim = [ymin - pad, ymax + pad]
 
-    return xlim, ylim
+#     return xlim, ylim
 
 def pad_lim(lim, pad=5):
     _min, _max = lim

@@ -352,8 +352,8 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
     last_pt = None
     for i in rng:
         pt = temp[i:i + 3]
-        if i > 0 and not numpy.array_equal(pt[0], last_pt):
-            continue
+        # if i > 0 and not numpy.array_equal(pt[0], last_pt): # unsure what this is doing here.
+        #     continue
         c1 = ctrl_pts(pt[0], pt[1], weight)
         c2 = ctrl_pts(pt[2], pt[1], weight)
         t = bezier([pt[0], c1, c2, pt[2]], segs)
