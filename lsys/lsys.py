@@ -28,6 +28,7 @@ class Lsys(object):
 
 
     """
+
     def __init__(
         self,
         axiom=None,
@@ -81,7 +82,8 @@ class Lsys(object):
 
         self._vocab = self._build_vocab()
         if "." in self._vocab:
-            raise Exception('the "." charcter is reserved and cannot be in `vocab`.')
+            raise Exception(
+                'the "." charcter is reserved and cannot be in `vocab`.')
 
         self._commands = self._build_commands()
         self._coords = None
@@ -98,35 +100,34 @@ class Lsys(object):
         self._coord_stale = True
         self._bezier_stale = True
 
-    #TODO: create __repr__ method
+    # TODO: create __repr__ method
     def __repr__(self):
         rep = "<Lsys({})>"
         args = [
-                self.axiom,
-                self.rule,
-                self.depth,
-                self.a0,
-                self.da,
-                self.step,
-                self.ds,
-                self.unoise,
-                self.forward,
-                self.bar,
-                self.right,
-                self.left,
-                self.goto,
-                self.ignore,
-                self.memory_check,
-                ]
+            self.axiom,
+            self.rule,
+            self.depth,
+            self.a0,
+            self.da,
+            self.step,
+            self.ds,
+            self.unoise,
+            self.forward,
+            self.bar,
+            self.right,
+            self.left,
+            self.goto,
+            self.ignore,
+            self.memory_check,
+        ]
         _repr = []
         for arg in args:
             if isinstance(arg, str):
-                _repr.append("'"+arg+"'")
+                _repr.append("'" + arg + "'")
             else:
                 _repr.append(str(arg))
 
         return rep.format(", ".join(_repr))
-
 
     @property
     def axiom(self):
@@ -311,7 +312,6 @@ class Lsys(object):
             self._x, self._y = algo.coords_to_xy(self.coords)
         return self._y
 
-
     def _build_vocab(self):
         """Compile all chars used in the vocabulary of the fractal"""
         vocab = ""
@@ -319,7 +319,7 @@ class Lsys(object):
             vocab += k
             vocab += v
         vocab += "".join([self.axiom, self.forward, self.goto,
-                         self.right, self.left, self.bar, self.ignore])
+                          self.right, self.left, self.bar, self.ignore])
 
         return set(vocab.replace(" ", ""))
 
@@ -327,10 +327,9 @@ class Lsys(object):
         """Compile all chars used in the vocabulary of the fractal"""
         cmd = ""
         cmd += "".join([self.forward, self.goto,
-                         self.right, self.left, self.bar])
+                        self.right, self.left, self.bar])
 
         return set(cmd.replace(" ", ""))
-
 
     @staticmethod
     def clean_rule(rule):
@@ -391,7 +390,6 @@ class Lsys(object):
         else:
             raise ValueError('`rule` must be string or mapping')
 
-
     @staticmethod
     def expand(axiom, rule, depth, bar="|", memory_check=True):
         """
@@ -434,20 +432,24 @@ class Lsys(object):
                     else:
                         output += c
             # axiom = output.replace(bar, str(i + 1) + '.')
-            axiom = output.replace(bar, str(i) + '.') #this broke tests. check CBN to see if the ds values are given.
-            i+=1
+            # this broke tests. check CBN to see if the ds values are given.
+            axiom = output.replace(bar, str(i) + '.')
+            i += 1
         return axiom.replace(".", bar)
 
-
-    def _compute_bezier(self, bezier_weight=None, segs=100):
+    def _compute_bezier(self, bezier_weight=None, segs=100, keep_ends=True):
         """compute
         """
 
-        self._bezier_x, self._bezier_y = bezier.bezier_xy(self.x, self.y, weight=bezier_weight, angle=self.da, segs=segs)
+        self._bezier_x, self._bezier_y = bezier.bezier_xy(self.x, self.y,
+                                                          angle=self.da,
+                                                          weight=bezier_weight,
+                                                          segs=segs,
+                                                          keep_ends=keep_ends,
+                                                          )
         # self._bezier_coords = algo.xy_to_coords(self._bezier_x, self._bezier_y)
 
         return self._bezier_x, self._bezier_y
-
 
     def compute_coords(self):
         """
@@ -494,7 +496,8 @@ class Lsys(object):
 
         x_y = []
         stack = []
-        bez_stack = [([x,y],[sx,sy])] #TODO: can this be a single point, rather than a segment?
+        # TODO: can this be a single point, rather than a segment?
+        bez_stack = [([x, y], [sx, sy])]
         depths = []
         num = 0
         found = False
@@ -510,13 +513,14 @@ class Lsys(object):
                         pres_depth = num
                     else:
                         pres_depth = depth
-                    s = step * ds**pres_depth * (algo.add_noise(unoise)+1)
+                    s = step * ds**pres_depth * (algo.add_noise(unoise) + 1)
 
                     sy = y + numpy.sin(a + algo.add_noise(unoise)) * s
                     sx = x + numpy.cos(a + algo.add_noise(unoise)) * s
 
                     if c == goto:
-                        x_y.append(([numpy.nan, numpy.nan],[numpy.nan, numpy.nan]))
+                        x_y.append(([numpy.nan, numpy.nan],
+                                    [numpy.nan, numpy.nan]))
                         depths.append(pres_depth)
                         pass
 
@@ -536,23 +540,24 @@ class Lsys(object):
                 if c in (right + left):
                     num = num or 1
                     if c == right:
-                        a -= da*num*(algo.add_noise(unoise) + 1)
+                        a -= da * num * (algo.add_noise(unoise) + 1)
                     else:
-                        a += da*num*(algo.add_noise(unoise) + 1)
+                        a += da * num * (algo.add_noise(unoise) + 1)
 
                 elif c == '[':
                     # if x_y:
                         # bez_stack.append(x_y[-1])
 
-                    stack.append((x, y, a + (algo.add_noise(unoise) * numpy.radians(5))))
+                    stack.append(
+                        (x, y, a + (algo.add_noise(unoise) * numpy.radians(5))))
 
                 elif c == ']':
                     x, y, a = stack.pop()
 
-                    x_y.append(([numpy.nan, numpy.nan],[numpy.nan, numpy.nan]))
+                    x_y.append(([numpy.nan, numpy.nan],
+                                [numpy.nan, numpy.nan]))
 
                     # x_y.append(bez_stack.pop())
-
 
                     depths.append(pres_depth)
                     # depths.append(pres_depth)
@@ -571,7 +576,6 @@ class Lsys(object):
 
         return numpy.array(x_y), numpy.array(depths)
 
-
     def plot_bezier(self, bezier_weight=None, segs=100, as_lc=False,
                     pad=5, square=True, ax=None, **kwargs):
 
@@ -579,18 +583,16 @@ class Lsys(object):
 
         if as_lc:
             warnings.warn("The `as_lc` parameter was ignored. Bezier LineCollections "
-                "will be supported in a future update."
-                )
-            # return viz.plot_line_collection(self._bezier_coords, pad=pad, square=square,
-                                            # ax=ax, **kwargs)
+                          "will be supported in a future update."
+                          )
+
+            # return viz.plot_line_collection(self._bezier_coords,
+            # pad=pad, square=square, ax=ax, **kwargs)
 
         return viz.plot(self._bezier_x, self._bezier_y, pad=pad, square=square, ax=ax, **kwargs)
-
 
     def plot(self, as_lc=False, pad=5, square=True, ax=None, **kwargs):
         if as_lc:
             return viz.plot_line_collection(self.coords, pad=pad, square=square, ax=ax, **kwargs)
 
         return viz.plot(self.x, self.y, pad=pad, square=square, ax=ax, **kwargs)
-
-

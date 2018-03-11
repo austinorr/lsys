@@ -2,7 +2,8 @@ import pytest
 
 import numpy
 
-from .. import bezier
+import lsys
+from lsys import bezier
 
 
 @pytest.mark.parametrize(('n', 'k', 'expected'),
@@ -162,6 +163,22 @@ def test_bezier_xy(keep, weight, expected):
     res = bezier.bezier_xy(pts[:, 0], pts[:, 1],
                            weight=weight, segs=5, keep_ends=keep)
     numpy.testing.assert_allclose(res, expected)
+
+
+def test_bezier_xy_curve():
+    d = lsys.Lsys(**lsys.Fractal['Dragon'])
+    d.depth = 2
+    res = bezier.bezier_xy(d.x, d.y, segs=4)
+    exp = (numpy.array([0.,  0.,  0.03931847,  0.14651593,  0.30545542,
+                        0.5,  0.5,  0.69454458,  0.85348407,  0.96068153,
+                        1.,  1.,  1.03931847,  1.14651593,  1.30545542,
+                        1.5,  2.]),
+           numpy.array([0.,  0.5,  0.69454458,  0.85348407,  0.96068153,
+                        1.,  1.,  0.96068153,  0.85348407,  0.69454458,
+                        0.5,  0.5,  0.30545542,  0.14651593,  0.03931847,
+                        0.,  0.]))
+
+    numpy.testing.assert_allclose(res, exp, rtol=1e-03)
 
 
 def test_circular_weight_ref():

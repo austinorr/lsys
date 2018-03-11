@@ -110,6 +110,8 @@ result_at_depth_2 = {
                              {'F': 'V', 'X': 'FX+FX+FXFY-FY-',
                               'Y': '+FX+FXFY-FY-FY'}),
                           ('F=|[+F]|[-F]+F', {'F': '|[+F]|[-F]+F'}),
+                          ({'X ': ' X+YF+', ' Y': '-FX-Y '},
+                           {'X': 'X+YF+', 'Y': '-FX-Y'})
                           ])
 def test_clean_rule(rule, expected):
 
@@ -129,14 +131,14 @@ def test_clean_rule(rule, expected):
 ])
 def test_expand(axiom, rule, depth, expected):
     result = lsys.Lsys.expand(axiom, rule, depth)
-    assert(result == expected.replace(".","|"))
+    assert(result == expected.replace(".", "|"))
 
 
 def test_expand_fractal_dict():
 
     fractal_dict = lsys.fractals.Fractal
 
-    for n in ['Dragon', 'Terdragon', 'Serpinski_Gasket', 'Tree1','SquareSpikes', 'Plant_f']:
+    for n in ['Dragon', 'Terdragon', 'Serpinski_Gasket', 'Tree1', 'SquareSpikes', 'Plant_f']:
         f = fractal_dict[n]
         axiom = f['axiom'].upper().replace(" ", "")
         depth = 2
@@ -144,7 +146,7 @@ def test_expand_fractal_dict():
 
         result = lsys.Lsys.expand(axiom, rule, depth)
 
-        assert(result == result_at_depth_2[n].replace(".","|"))
+        assert(result == result_at_depth_2[n].replace(".", "|"))
 
 
 @pytest.mark.parametrize(('rule', 'expected'),
@@ -156,6 +158,7 @@ def test_expand_fractal_dict():
                              {'F': 'V', 'X': 'FX+FX+FXFY-FY-',
                               'Y': '+FX+FXFY-FY-FY'}),
                           ('F is |[+F]|[-F]+F', {'F': '|[+F]|[-F]+F'}),
+                          (['F', '|[+F]|[-F]+F'], {'F': '|[+F]|[-F]+F'})
                           ])
 def test_raise_ValueError_clean_rule(rule, expected):
     with pytest.raises(ValueError) as e:

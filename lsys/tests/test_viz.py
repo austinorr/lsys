@@ -4,8 +4,8 @@ from matplotlib import pyplot
 import pytest
 
 import lsys
-from .. import viz
-from .. import algo
+from lsys import viz
+from lsys import algo
 
 BASELINE_DIR = 'baseline_images/test_viz'
 TOLERANCE = 15

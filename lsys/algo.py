@@ -11,6 +11,7 @@ def add_noise(num, scale=.5):
         return num * numpy.random.normal(0.0, scale)
     return 0
 
+
 def midpoints(np_array):
     """
     Converts np array to an array of midpoints ignoring
@@ -36,6 +37,7 @@ def midpoints(np_array):
 
     return result
 
+
 def coords_to_xy(coords):
     """
     Parameters
@@ -47,7 +49,7 @@ def coords_to_xy(coords):
     -------
     x : numpy.array
         a 1D array
-    y : 
+    y :
     """
     x = coords[:, :, 0].flatten()
     y = coords[:, :, 1].flatten()
@@ -59,9 +61,4 @@ def xy_to_coords(x, y):
     _x = validate.is_np(x)
     _y = validate.is_np(y)
 
-    if not _x.shape == _y.shape:
-        raise Exception('inputs must be same shape')
-
     return numpy.dstack([_x, _y]).reshape(-1, 2, 2)
-
-
