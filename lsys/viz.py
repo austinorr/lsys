@@ -75,6 +75,9 @@ def plot_line_collection(coords, pad=5, square=False, ax=None, **kwargs):
     ax : matplotlib.axes.Axes
 
     """
+    if 'cmap' in kwargs:
+        if 'array' not in kwargs:
+            kwargs['array'] = numpy.linspace(0.0, 1.0, len(coords))
 
     fig, ax = validate.axes_object(ax)
     lines = LineCollection(coords, **kwargs)
@@ -108,17 +111,6 @@ def square_aspect(xlim, ylim):
 
         return [x0 - fac, x1 + fac], ylim
 
-
-# def pad_lims(xlim, ylim, pad=5):
-#     xmin, xmax = xlim
-#     ymin, ymax = ylim
-#     pad = numpy.nanmax([(xmax - xmin), (ymax - ymin)]) * pad / 100
-
-#     xlim = [xmin - pad, xmax + pad]
-#     ylim = [ymin - pad, ymax + pad]
-
-#     return xlim, ylim
-
 def pad_lim(lim, pad=5):
     _min, _max = lim
     pad = (_max - _min) * pad / 100
@@ -128,21 +120,11 @@ def pad_lim(lim, pad=5):
 
 
 def get_coord_lims(coords, pad=5, square=False):
-    # x = coords[:, :, 0]
-    # y = coords[:, :, 1]
+
     x, y = algo.coords_to_xy(coords)
 
     return get_xy_lims(x, y, pad=pad, square=square)
 
-    # xmin, xmax = numpy.nanmin(coords[:, :, 0]), numpy.nanmax(coords[:, :, 0])
-    # ymin, ymax = numpy.nanmin(coords[:, :, 1]), numpy.nanmax(coords[:, :, 1])
-
-    # xlim, ylim = pad_lim([xmin, xmax], pad=pad), pad_lim([ymin, ymax], pad=pad)
-
-    # if square:
-    #     return square_aspect(xlim, ylim)
-
-    # return xlim, ylim
 
 
 def get_xy_lims(x, y, pad=5, square=False):
@@ -151,7 +133,6 @@ def get_xy_lims(x, y, pad=5, square=False):
     y0, y1 = numpy.nanmin(y), numpy.nanmax(y)
     xlim, ylim = pad_lim([x0, x1], pad=pad), pad_lim([y0, y1], pad=pad)
 
-    # xlim, ylim = pad_lims([x0, x1], [y0, y1], pad=pad)
 
     if square:
         return square_aspect(xlim, ylim)

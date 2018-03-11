@@ -288,28 +288,28 @@ class Lsys(object):
 
     @property
     def depths(self):
-        if self._coords is None or self._coord_stale:
-            self._coords, self._depths = self.compute_coords()
+        if self._depths is None or self._coord_stale:
+            self._x, self._y, self._coords, self._depths = self.compute_coords()
             self._coord_stale = False
         return self._depths
 
     @property
     def coords(self):
         if self._coords is None or self._coord_stale:
-            self._coords, self._depths = self.compute_coords()
+            self._x, self._y, self._coords, self._depths = self.compute_coords()
             self._coord_stale = False
         return self._coords
 
     @property
     def x(self):
         if self._x is None or self._coord_stale:
-            self._x, self._y = algo.coords_to_xy(self.coords)
+            self._x, self._y, self._coords, self._depths = self.compute_coords()
         return self._x
 
     @property
     def y(self):
         if self._y is None or self._coord_stale:
-            self._x, self._y = algo.coords_to_xy(self.coords)
+            self._x, self._y, self._coords, self._depths = self.compute_coords()
         return self._y
 
     def _build_vocab(self):
@@ -447,7 +447,7 @@ class Lsys(object):
                                                           segs=segs,
                                                           keep_ends=keep_ends,
                                                           )
-        # self._bezier_coords = algo.xy_to_coords(self._bezier_x, self._bezier_y)
+        self._bezier_coords = algo.xy_to_coords(self._bezier_x, self._bezier_y)
 
         return self._bezier_x, self._bezier_y
 
@@ -483,10 +483,6 @@ class Lsys(object):
         goto = self.goto
         ignore = self.ignore
 
-        # a = a0
-
-        commands_have_digits = any([c.isdigit() for c in self.commands])
-
         tol = 1e-9
 
         x = 0
@@ -494,15 +490,14 @@ class Lsys(object):
         sx = 0
         sy = 0
 
-        x_y = []
+        xl = [x]
+        yl = [y]
         stack = []
-        # TODO: can this be a single point, rather than a segment?
-        bez_stack = [([x, y], [sx, sy])]
+
         depths = []
         num = 0
         found = False
         for c in string:
-            # if not commands_have_digits and c.isdigit():
             if c.isdigit():
                 num = num * 10 + int(c)
 
@@ -517,21 +512,19 @@ class Lsys(object):
 
                     sy = y + numpy.sin(a + algo.add_noise(unoise)) * s
                     sx = x + numpy.cos(a + algo.add_noise(unoise)) * s
+                    bx = sx if numpy.abs(sx) > tol else 0
+                    by = sy if numpy.abs(sy) > tol else 0
+
 
                     if c == goto:
-                        x_y.append(([numpy.nan, numpy.nan],
-                                    [numpy.nan, numpy.nan]))
-                        depths.append(pres_depth)
-                        pass
 
+                        xl.append(numpy.nan)
+                        yl.append(numpy.nan)
+                        # depths.append(pres_depth)
                     else:
-                        ax = x if numpy.abs(x) > tol else 0
-                        ay = y if numpy.abs(y) > tol else 0
-                        bx = sx if numpy.abs(sx) > tol else 0
-                        by = sy if numpy.abs(sy) > tol else 0
-                        x_y.append(([ax, ay], [bx, by]))
+                        xl.append(bx)
+                        yl.append(by)
                         depths.append(pres_depth)
-
                     x = sx
                     y = sy
 
@@ -545,22 +538,16 @@ class Lsys(object):
                         a += da * num * (algo.add_noise(unoise) + 1)
 
                 elif c == '[':
-                    # if x_y:
-                        # bez_stack.append(x_y[-1])
-
                     stack.append(
                         (x, y, a + (algo.add_noise(unoise) * numpy.radians(5))))
 
                 elif c == ']':
+                    xl.append(numpy.nan)
+                    yl.append(numpy.nan)
+
                     x, y, a = stack.pop()
-
-                    x_y.append(([numpy.nan, numpy.nan],
-                                [numpy.nan, numpy.nan]))
-
-                    # x_y.append(bez_stack.pop())
-
-                    depths.append(pres_depth)
-                    # depths.append(pres_depth)
+                    xl.append(x if numpy.abs(x) > tol else 0)
+                    yl.append(y if numpy.abs(y) > tol else 0)
 
                 elif c in ignore:
                     pass
@@ -572,22 +559,24 @@ class Lsys(object):
                 num = 0
             found = False
 
-        assert len(x_y) == len(depths)
+        xl, yl, depths = numpy.array(xl), numpy.array(yl), numpy.array(depths)
 
-        return numpy.array(x_y), numpy.array(depths)
+        segs = algo.xy_to_coords(xl, yl)
+
+        # assert len(depths) == len(segs)
+
+        return xl, yl, segs, depths
 
     def plot_bezier(self, bezier_weight=None, segs=100, as_lc=False,
-                    pad=5, square=True, ax=None, **kwargs):
+                    pad=5, square=True, keep_ends=True, ax=None, **kwargs):
 
-        _, _ = self._compute_bezier(bezier_weight=None, segs=100)
+        _, _ = self._compute_bezier(
+            bezier_weight=bezier_weight, segs=segs, keep_ends=keep_ends)
 
         if as_lc:
-            warnings.warn("The `as_lc` parameter was ignored. Bezier LineCollections "
-                          "will be supported in a future update."
-                          )
 
-            # return viz.plot_line_collection(self._bezier_coords,
-            # pad=pad, square=square, ax=ax, **kwargs)
+            return viz.plot_line_collection(self._bezier_coords,
+                                            pad=pad, square=square, ax=ax, **kwargs)
 
         return viz.plot(self._bezier_x, self._bezier_y, pad=pad, square=square, ax=ax, **kwargs)
 
