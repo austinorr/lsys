@@ -520,6 +520,8 @@ class Lsys(object):
 
                         xl.append(numpy.nan)
                         yl.append(numpy.nan)
+                        xl.append(bx)
+                        yl.append(by)
                         # depths.append(pres_depth)
                     else:
                         xl.append(bx)
