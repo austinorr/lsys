@@ -355,8 +355,8 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
     for segx, segy in zip(_x, _y):
 
         xmid, ymid = algo.midpoints(segx), algo.midpoints(segy)
-        xmid = numpy.dstack((xmid, segx[1:])).flatten()[:-1]
-        ymid = numpy.dstack((ymid, segy[1:])).flatten()[:-1]
+        # xmid = numpy.dstack((xmid, segx[1:])).flatten()[:-1]
+        # ymid = numpy.dstack((ymid, segy[1:])).flatten()[:-1]
 
         temp = numpy.vstack((xmid, ymid)).T
 

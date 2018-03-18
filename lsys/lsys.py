@@ -288,28 +288,28 @@ class Lsys(object):
 
     @property
     def depths(self):
-        if self._depths is None or self._coord_stale:
-            self._x, self._y, self._coords, self._depths = self.compute_coords()
+        if self._coords is None or self._coord_stale:
+            self._coords, self._depths = self.compute_coords()
             self._coord_stale = False
         return self._depths
 
     @property
     def coords(self):
         if self._coords is None or self._coord_stale:
-            self._x, self._y, self._coords, self._depths = self.compute_coords()
+            self._coords, self._depths = self.compute_coords()
             self._coord_stale = False
         return self._coords
 
     @property
     def x(self):
         if self._x is None or self._coord_stale:
-            self._x, self._y, self._coords, self._depths = self.compute_coords()
+            self._x, self._y = algo.coords_to_xy(self.coords)
         return self._x
 
     @property
     def y(self):
         if self._y is None or self._coord_stale:
-            self._x, self._y, self._coords, self._depths = self.compute_coords()
+            self._x, self._y = algo.coords_to_xy(self.coords)
         return self._y
 
     def _build_vocab(self):
@@ -483,6 +483,10 @@ class Lsys(object):
         goto = self.goto
         ignore = self.ignore
 
+        # a = a0
+
+        commands_have_digits = any([c.isdigit() for c in self.commands])
+
         tol = 1e-9
 
         x = 0
@@ -490,10 +494,8 @@ class Lsys(object):
         sx = 0
         sy = 0
 
-        xl = [x]
-        yl = [y]
+        x_y = []
         stack = []
-
         depths = []
         num = 0
         found = False
@@ -512,21 +514,21 @@ class Lsys(object):
 
                     sy = y + numpy.sin(a + algo.add_noise(unoise)) * s
                     sx = x + numpy.cos(a + algo.add_noise(unoise)) * s
-                    bx = sx if numpy.abs(sx) > tol else 0
-                    by = sy if numpy.abs(sy) > tol else 0
-
 
                     if c == goto:
-
-                        xl.append(numpy.nan)
-                        yl.append(numpy.nan)
-                        xl.append(bx)
-                        yl.append(by)
-                        # depths.append(pres_depth)
-                    else:
-                        xl.append(bx)
-                        yl.append(by)
+                        x_y.append(([numpy.nan, numpy.nan],
+                                    [numpy.nan, numpy.nan]))
                         depths.append(pres_depth)
+                        pass
+
+                    else:
+                        ax = x if numpy.abs(x) > tol else 0
+                        ay = y if numpy.abs(y) > tol else 0
+                        bx = sx if numpy.abs(sx) > tol else 0
+                        by = sy if numpy.abs(sy) > tol else 0
+                        x_y.append(([ax, ay], [bx, by]))
+                        depths.append(pres_depth)
+
                     x = sx
                     y = sy
 
@@ -540,16 +542,17 @@ class Lsys(object):
                         a += da * num * (algo.add_noise(unoise) + 1)
 
                 elif c == '[':
+
                     stack.append(
                         (x, y, a + (algo.add_noise(unoise) * numpy.radians(5))))
 
                 elif c == ']':
-                    xl.append(numpy.nan)
-                    yl.append(numpy.nan)
-
                     x, y, a = stack.pop()
-                    xl.append(x if numpy.abs(x) > tol else 0)
-                    yl.append(y if numpy.abs(y) > tol else 0)
+
+                    x_y.append(([numpy.nan, numpy.nan],
+                                [numpy.nan, numpy.nan]))
+
+                    depths.append(pres_depth)
 
                 elif c in ignore:
                     pass
@@ -561,13 +564,9 @@ class Lsys(object):
                 num = 0
             found = False
 
-        xl, yl, depths = numpy.array(xl), numpy.array(yl), numpy.array(depths)
+        assert len(x_y) == len(depths)
 
-        segs = algo.xy_to_coords(xl, yl)
-
-        # assert len(depths) == len(segs)
-
-        return xl, yl, segs, depths
+        return numpy.array(x_y), numpy.array(depths)
 
     def plot_bezier(self, bezier_weight=None, segs=100, as_lc=False,
                     pad=5, square=True, keep_ends=True, ax=None, **kwargs):
@@ -578,12 +577,20 @@ class Lsys(object):
         if as_lc:
 
             return viz.plot_line_collection(self._bezier_coords,
-                                            pad=pad, square=square, ax=ax, **kwargs)
+                                            pad=pad,
+                                            square=square,
+                                            ax=ax,
+                                            **kwargs)
 
-        return viz.plot(self._bezier_x, self._bezier_y, pad=pad, square=square, ax=ax, **kwargs)
+        return viz.plot(self._bezier_x, self._bezier_y,
+                        pad=pad, square=square, ax=ax, **kwargs)
 
     def plot(self, as_lc=False, pad=5, square=True, ax=None, **kwargs):
         if as_lc:
-            return viz.plot_line_collection(self.coords, pad=pad, square=square, ax=ax, **kwargs)
+            return viz.plot_line_collection(self.coords,
+                                            pad=pad,
+                                            square=square,
+                                            ax=ax,
+                                            **kwargs)
 
         return viz.plot(self.x, self.y, pad=pad, square=square, ax=ax, **kwargs)

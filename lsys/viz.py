@@ -37,6 +37,8 @@ def plot(x, y, pad=5, square=False, ax=None, **kwargs):
     ax : matplotlib.axes.Axes
 
     """
+    if 'solid_capstype' not in kwargs:
+        kwargs['solid_capstyle']='round'
 
     fig, ax = validate.axes_object(ax)
     ax.plot(x, y, **kwargs)

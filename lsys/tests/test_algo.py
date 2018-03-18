@@ -67,14 +67,8 @@ def test_midpoints(array_like, expected):
 
 
 def test_xy_to_coords():
-    coords = algo.xy_to_coords(X, Y)
+    coords = algo.xy_to_coords(X, Y, stride=2)
     numpy.testing.assert_equal(coords, COORDS)
-
-
-def test_xy_to_coords_raises_shape():
-    with pytest.raises(ValueError):
-
-        algo.xy_to_coords(X, Y[:-1])
 
 
 def test_coords_to_xy():

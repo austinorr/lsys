@@ -56,17 +56,28 @@ def coords_to_xy(coords):
 
     return x, y
 
+
 def split_array_on_nan(array):
     mask = numpy.ma.masked_invalid(array)
     clump_ix = numpy.ma.clump_unmasked(mask)
     return [array[s] for s in clump_ix]
 
 
-def xy_to_coords(x, y):
+def __xy_to_coords(x, y):
     _x = validate.is_np(x)
     _y = validate.is_np(y)
 
-    points = numpy.array([x, y]).T.reshape(-1, 1, 2)
-    segments = numpy.concatenate([points[:-1], points[1:]], axis=1)
+    return numpy.dstack([_x, _y]).reshape(-1, 2, 2)
 
-    return segments[[~numpy.any(numpy.isnan(segments[:, :, 0]), axis=1)]]
+
+def xy_to_coords(x, y, stride=None):  # this makes duplicate segments?
+    _x = validate.is_np(x)
+    _y = validate.is_np(y)
+
+    segments = numpy.array([x, y]).T.reshape(-1, 1, 2)
+    segments = numpy.concatenate([segments[:-1], segments[1:]], axis=1)
+
+    if stride is not None:
+        return segments[0::stride]
+
+    return segments
