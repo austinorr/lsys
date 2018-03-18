@@ -342,31 +342,54 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
     if weight is None:
         weight = circular_weight(angle)
 
-    xmid, ymid = algo.midpoints(x), algo.midpoints(y)
+    _x = [x[s] for s in numpy.ma.clump_unmasked(numpy.ma.masked_invalid(x))]
+    _y = [y[s] for s in numpy.ma.clump_unmasked(numpy.ma.masked_invalid(y))]
 
-    temp = numpy.vstack(([xmid], [ymid])).T
-
-    rng = numpy.arange(0, len(temp) - 1, 2)
     tx = []
     ty = []
-    last_pt = None
-    for i in rng:
-        pt = temp[i:i + 3]
-        # if i > 0 and not numpy.array_equal(pt[0], last_pt): # unsure what this is doing here.
-        #     continue
-        c1 = ctrl_pts(pt[0], pt[1], weight)
-        c2 = ctrl_pts(pt[2], pt[1], weight)
-        t = bezier([pt[0], c1, c2, pt[2]], segs)
-        tx.append(t[:, 0])
-        ty.append(t[:, 1])
-        last_pt = pt[2]
 
-    tx = numpy.array(tx).flatten()
-    ty = numpy.array(ty).flatten()
+    insert_nan = False
+    if len(_x) > 1:
+        insert_nan = True
 
-    if keep_ends:
+    for segx, segy in zip(_x, _y):
 
-        tx = numpy.concatenate((x[:1], tx, x[-1:]))
-        ty = numpy.concatenate((y[:1], ty, y[-1:]))
+        xmid, ymid = algo.midpoints(segx), algo.midpoints(segy)
+        # xmid = numpy.dstack((xmid, segx[1:])).flatten()[:-1]
+        # ymid = numpy.dstack((ymid, segy[1:])).flatten()[:-1]
+
+        temp = numpy.vstack((xmid, ymid)).T
+
+        rng = numpy.arange(0, len(temp) - 1, 2)
+        _tx = []
+        _ty = []
+        last_pt = None
+        for i in rng:
+            pt = temp[i:i + 3]
+            if i > 0 and not numpy.array_equal(pt[0], last_pt): # unsure what this is doing here.
+                continue
+            c1 = ctrl_pts(pt[0], pt[1], weight)
+            c2 = ctrl_pts(pt[2], pt[1], weight)
+            t = bezier([pt[0], c1, c2, pt[2]], segs)
+            _tx.append(t[:, 0])
+            _ty.append(t[:, 1])
+            last_pt = pt[2]
+
+        tx.append(numpy.concatenate(
+            (segx[:1], numpy.array(_tx).flatten(), segx[-1:])))
+        ty.append(numpy.concatenate(
+            (segy[:1], numpy.array(_ty).flatten(), segy[-1:])))
+
+        if insert_nan:
+            for t in [tx, ty]:
+                t.append([numpy.nan])
+
+    tx = numpy.concatenate(tx)
+    ty = numpy.concatenate(ty)
+
+    if not keep_ends:
+
+        tx = tx[1:-1]
+        ty = ty[1:-1]
 
     return tx, ty

@@ -175,5 +175,47 @@ def test_raise_MemoryError_process():
         string = lsys.Lsys.expand(axiom, rule, depth)
 
 
-def test_Lsys_string():
-    pass
+def test_Lsys_setters():
+    dic = {
+        "axiom": 'F',
+        "rule": {'F': 'F-F+F'},
+        "depth": 3,
+        "a0": 90,
+        "da": 120,
+        "step": 1,
+        "ds": 1,
+        "unoise": 0,
+        "forward": 'F',
+        "bar": "|",
+        "right": "+",
+        "left": "-",
+        "goto": 'G',
+        "ignore": 'X',
+        "memory_check": False,
+    }
+    d = lsys.Lsys()
+
+    for attr, val in dic.items():
+        setattr(d, attr, val)
+        assert hasattr(d, attr)
+        assert getattr(d, attr) == val
+
+    props = [
+        "vocab",
+        "commands",
+        "coords",
+        "depths",
+        "x",
+        "y",
+        "_bezier_coords",
+        "_bezier_x",
+        "_bezier_y",
+        "string",
+        "_string_stale",
+        "_coord_stale",
+        "_bezier_stale",
+    ]
+
+    for p in props:
+        getattr(d, p)
+        assert hasattr(d, p)

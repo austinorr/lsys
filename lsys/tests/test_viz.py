@@ -20,9 +20,9 @@ plotData = numpy.array([
 
 
 @pytest.mark.parametrize(
-    ('xlim', 'ylim', 'expected' ), [
-    ( [6, 12], [-12, 10], ([-2, 20], [-12, 10]) ),
-    ( [30, 60],[-5, 10], ([30, 60], [-12.5, 17.5]) )
+    ('xlim', 'ylim', 'expected'), [
+        ([6, 12], [-12, 10], ([-2, 20], [-12, 10])),
+        ([30, 60], [-5, 10], ([30, 60], [-12.5, 17.5]))
     ])
 def test_square_aspect(xlim, ylim, expected):
     result = viz.square_aspect(xlim, ylim)
@@ -39,18 +39,19 @@ def test_square_aspect2():
     y0, y1 = numpy.min(y), numpy.max(y)
     xlim, ylim = viz.square_aspect([x0, x1], [y0, y1])
 
-    fig, ax = pyplot.subplots(figsize=(4,4))
+    fig, ax = pyplot.subplots(figsize=(4, 4))
     _ = viz.plot(x, y, ax=ax, color='b', marker='o', linestyle="", square=True)
 
     return fig
 
 
-@pytest.mark.parametrize('seq',
+@pytest.mark.parametrize(
+    'seq',
     [
         ['red', 'green', 'blue'],
         ['red', 'green', 'blue', 'blue'],
         ['red', 'green', 0.33, 'green',
-        'blue', .66, 'blue'],
+         'blue', .66, 'blue'],
         ['r', 'g', 'b', 'b'],
     ])
 @pytest.mark.mpl_image_compare(baseline_dir=BASELINE_DIR,
@@ -69,7 +70,8 @@ def test_make_colormap_plot(seq):
     return fig
 
 
-@pytest.mark.parametrize('fractal',
+@pytest.mark.parametrize(
+    'fractal',
     [
         ('Bush1'),
         ('Bush2'),
@@ -105,7 +107,7 @@ def test_make_colormap_plot(seq):
 @pytest.mark.mpl_image_compare(baseline_dir=BASELINE_DIR,
                                tolerance=TOLERANCE,
                                remove_text=False,
-                               savefig_kwargs={'dpi':150})
+                               savefig_kwargs={'dpi': 150})
 def test_plot_lsys(fractal):
     kwargs = lsys.fractals.Fractal[fractal]
     f = lsys.Lsys(**kwargs)
@@ -115,10 +117,51 @@ def test_plot_lsys(fractal):
     axes = axes.flatten()
     for ax, depth in zip(axes, depths):
         f.depth = depth
-        ax = f.plot(ax=ax, square=True, color='k')
+        ax = f.plot(ax=ax, square=True, color='k', alpha=0.5)
+        ax = f.plot(ax=ax, as_lc=True, color='k', alpha=0.5)
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_title(fractal)
     pyplot.close('all')
     return fig
+
+
+@pytest.mark.parametrize(
+    'fractal',
+    [
+        ('Dragon'),
+        ('Terdragon'),
+        ('Serpinski_Gasket'),
+        ('Tree1'),
+        ('SquareSpikes'),
+        ('Plant_f'),
+    ])
+# @pytest.mark.mpl_image_compare(baseline_dir=BASELINE_DIR,
+#                                tolerance=TOLERANCE,
+#                                remove_text=False,
+#                                savefig_kwargs={'dpi': 150})
+def test_plot_bezier_lsys(fractal):
+    kwargs = lsys.fractals.Fractal[fractal]
+    f = lsys.Lsys(**kwargs)
+    f.unoise = 0
+    fig, axes = pyplot.subplots(1, 4, figsize=(12, 3))
+    depths = [0, 1, 2, 4]
+    axes = axes.flatten()
+    for ax, depth in zip(axes, depths):
+        f.depth = depth
+        ax = f.plot_bezier(ax=ax, square=True, color='k', alpha=0.5)
+        ax = f.plot_bezier(ax=ax, as_lc=True, color='k', alpha=0.5)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_title(fractal)
+    pyplot.close('all')
+    return fig
+
+
+
+
+
+
+
+
 
