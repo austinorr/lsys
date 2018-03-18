@@ -5,15 +5,18 @@
 
 from setuptools import setup, find_packages
 
-with open('lsys//__init__.py') as info_file:
-    version = author = email = ""
+def get_pkg_info(info_file, info):
+    val = ""
+    info_file.seek(0)
     for line in info_file:
-        if line.startswith('__version__'):
-            version = line.split("=")[1].replace("'","").strip()
-        elif line.startswith('__author__'):
-            author = line.strip().split("=")[1].replace("'","").strip()
-        elif line.startswith('__email__'):
-            email = line.strip().split("=")[1].replace("'","").strip()
+        if line.startswith('__{}__'.format(info)):
+            val = line.split("=")[1].replace("'", "").replace('"', "").strip()
+    return val
+
+with open(os.path.join('swmmnetwork', '__init__.py')) as init_file:
+    author = get_pkg_info(init_file, 'author')
+    email = get_pkg_info(init_file, 'email')
+    version = get_pkg_info(init_file, 'version')
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()

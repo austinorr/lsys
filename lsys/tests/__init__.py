@@ -8,7 +8,7 @@ import lsys
 
 from . import *
 
-def test(*args): # pragma: no cover
+def test(*args):
     options = [resource_filename('lsys', 'tests')]
     options.extend(list(args))
     return pytest.main(options)

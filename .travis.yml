@@ -5,23 +5,23 @@ matrix:
     - python: 2.7
       env:
         - COVERAGE=false
-        - TESTERS="pytest coverage"
+        - TESTERS="pytest"
         - ARGS="--mpl --verbose"
     - python: 3.4
       env:
         - COVERAGE=false
-        - TESTERS="pytest coverage"
+        - TESTERS="pytest"
         - ARGS="--mpl --verbose"
     - python: 3.5
       env:
         - COVERAGE=false
-        - TESTERS="pytest coverage"
+        - TESTERS="pytest"
         - ARGS="--mpl --verbose"
     - python: 3.6
       env:
         - COVERAGE=true
         - TESTERS="pytest coverage"
-        - ARGS="--mpl --verbose"
+        - ARGS="--mpl --verbose --cov"
 
 # Install, update, and setup Miniconda
 # This should not need changing.
@@ -36,10 +36,12 @@ before_install:
 # This should not need changing.
 install:
   - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION nomkl numpy matplotlib
-  - source activate test
+  - conda activate test
   - conda install --yes --channel=conda-forge ${TESTERS}
   - pip install pytest-mpl>=0.8
-  - pip install codecov
+  - if [ ${COVERAGE} = true ]; then
+      pip install pytest-cov>=2.5
+      pip install codecov
   - pip install .
 
 script:
@@ -47,7 +49,6 @@ script:
 
 after_success:
   - if [ ${COVERAGE} = true ]; then
-      coverage run --source lsys check_lsys.py;
       coverage report -m;
       codecov;
     fi
