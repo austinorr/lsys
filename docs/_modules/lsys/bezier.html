@@ -1,0 +1,620 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lsys.bezier &mdash; lsys 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="lsys 0.1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> lsys
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">lsys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">lsys</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>lsys.bezier</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lsys.bezier</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module has functions helpful in the construction of general</span>
+<span class="sd">bezier curves, as well as fitting cubic bezier curves between</span>
+<span class="sd">vertices calculated by the :class:``lsys.Lsys``</span>
+
+<span class="sd">In addition, this module contains the code used to determine the</span>
+<span class="sd">symetric weight factor needed to determine the position of control</span>
+<span class="sd">points that form near-circular curves between three points with</span>
+<span class="sd">an arbitrary interior angle, buiding on the work documented</span>
+<span class="sd">`here &lt;http://spencermortensen.com/articles/bezier-circle/&gt;`_.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">validate</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">algo</span>
+
+
+<div class="viewcode-block" id="ctrl_pts"><a class="viewcode-back" href="../../lsys.html#lsys.bezier.ctrl_pts">[docs]</a><span class="k">def</span> <span class="nf">ctrl_pts</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the position of a new point along vector</span>
+<span class="sd">    `p0` to `p1` with magnitude `w`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p0 : 1D array</span>
+<span class="sd">        the starting point</span>
+<span class="sd">    p1 : 1D array</span>
+<span class="sd">        the end point</span>
+<span class="sd">    w : float</span>
+<span class="sd">        the weight factor</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    point : 1D array</span>
+<span class="sd">        a point along vector `p0` to `p1` with magnitude `w`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="n">validate</span><span class="o">.</span><span class="n">is_np</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">validate</span><span class="o">.</span><span class="n">is_np</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span>
+    <span class="k">return</span> <span class="n">p0</span> <span class="o">+</span> <span class="n">vec</span> <span class="o">*</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="binomial"><a class="viewcode-back" href="../../lsys.html#lsys.bezier.binomial">[docs]</a><span class="k">def</span> <span class="nf">binomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : integer</span>
+<span class="sd">        the order of the binomial to expand</span>
+<span class="sd">    k : integer</span>
+<span class="sd">        the zero indexed position of the binomial expansion</span>
+<span class="sd">        coefficient to return</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coefficient : integer</span>
+<span class="sd">        coefficient for the nth order binomial expansion, kth term</span>
+
+<span class="sd">    reference: http://pomax.github.io/bezierinfo/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tri</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">],</span>              <span class="c1"># n=0</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>            <span class="c1"># n=1</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>          <span class="c1"># n=2</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>        <span class="c1"># n=3</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>      <span class="c1"># n=4</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>    <span class="c1"># n=5</span>
+           <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>  <span class="c1"># n=6</span>
+           <span class="p">]</span>
+
+    <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tri</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tri</span><span class="p">)</span>
+        <span class="n">nextrow</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">nextrow</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+            <span class="n">nextrow</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tri</span><span class="p">[</span><span class="n">prev</span><span class="p">][</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">tri</span><span class="p">[</span><span class="n">prev</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">nextrow</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">tri</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nextrow</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tri</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">k</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="poly"><a class="viewcode-back" href="../../lsys.html#lsys.bezier.poly">[docs]</a><span class="k">def</span> <span class="nf">poly</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expands binomial and computes value at `t`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : integer</span>
+<span class="sd">        nth order of polynomial</span>
+<span class="sd">    k : integer</span>
+<span class="sd">        positional term for binomial expansion coefficient</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    value : float or list of floats</span>
+
+
+<span class="sd">    Reference</span>
+<span class="sd">    ---------</span>
+<span class="sd">    https://gist.github.com/Juanlu001/7284462</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coeff</span> <span class="o">=</span> <span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_poly</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates value at t between bezier points&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">coeff</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span><span class="o">**</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_poly</span></div>
+
+
+<div class="viewcode-block" id="bezier"><a class="viewcode-back" href="../../lsys.html#lsys.bezier.bezier">[docs]</a><span class="k">def</span> <span class="nf">bezier</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">segs</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes nth order bezier curves through the `points` provided</span>
+<span class="sd">    and returns the curve as a list of points to produce line segments.</span>
+
+<span class="sd">    The order of the bezier curve is determined by the length of</span>
+<span class="sd">    the list of points. The length of the output curve numpy.array is</span>
+<span class="sd">    equal to `segs` + 1, such that `segs` is equal to the number of</span>
+<span class="sd">    line segments between the points of the array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : list-like</span>
+<span class="sd">        2D array</span>
+<span class="sd">    segs : integer, optional (default = 100)</span>
+<span class="sd">        The number of line segments to approximate bezier curve</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    curve : numpy.array</span>
+<span class="sd">        2D array of points along the curve.</span>
+
+<span class="sd">    Reference</span>
+<span class="sd">    ---------</span>
+<span class="sd">    https://gist.github.com/Juanlu001/7284462</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">validate</span><span class="o">.</span><span class="n">is_np</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">dims</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># increment num such that final line segments will be equal to `segs`</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="n">segs</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">)</span>
+    <span class="n">curve</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num</span><span class="p">,</span> <span class="n">dims</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+        <span class="n">curve</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">poly</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">)(</span><span class="n">t</span><span class="p">),</span> <span class="n">pt</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">curve</span></div>
+
+
+<div class="viewcode-block" id="circular_weight"><a class="viewcode-back" href="../../lsys.html#lsys.bezier.circular_weight">[docs]</a><span class="k">def</span> <span class="nf">circular_weight</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function utilizes the precomputed circular bezier function</span>
+<span class="sd">    with a fit to a 10th order curve created by the following code block:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        x = numpy.arange(.5, 180, 0.5)</span>
+<span class="sd">        y = []</span>
+<span class="sd">        for i in x:</span>
+<span class="sd">            y.append(bezier.find_circular_weight(i, tol=1e-12, max_iters=500))</span>
+<span class="sd">        y = numpy.array(y)</span>
+<span class="sd">        z = numpy.polyfit(x, y, 10)</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    angle : float</span>
+<span class="sd">        enter the angle to be traversed in degrees</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    weight : float</span>
+<span class="sd">        Weight value for calculating bezier control points that</span>
+<span class="sd">        approximate a circular curve.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="o">-</span><span class="mf">2.45143082907626980583458614241573e-24</span><span class="p">,</span>
+        <span class="mf">1.58856196152315352138612607918623e-21</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">5.03264989277462933391916020538014e-19</span><span class="p">,</span>
+        <span class="mf">8.57954915199159887348249578203777e-17</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">1.09982713519619074150585319501519e-14</span><span class="p">,</span>
+        <span class="mf">6.42175701661701683377126465867012e-13</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">1.95012445981222027957307425487916e-10</span><span class="p">,</span>
+        <span class="mf">6.98338125134285339870680633234242e-10</span><span class="p">,</span>
+        <span class="o">-</span><span class="mf">1.27018636324842636571531492850617e-05</span><span class="p">,</span>
+        <span class="mf">5.58069196465371404519196542326487e-08</span><span class="p">,</span>
+        <span class="mf">6.66666581437823202449521886592265e-01</span>
+    <span class="p">])</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">p</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="find_circular_weight"><a class="viewcode-back" href="../../lsys.html#lsys.bezier.find_circular_weight">[docs]</a><span class="k">def</span> <span class="nf">find_circular_weight</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span>  <span class="n">guess</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">max_iters</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">segs</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds weight factor for bezier control points such that the `angle`</span>
+<span class="sd">    QRS will be filled with cubic bezier curve approximating a circle</span>
+<span class="sd">    that is tangent at the points Q and S.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    angle : float</span>
+<span class="sd">        the turn angle in degrees. e.g., if turn angle is 30 degrees, then the angle</span>
+<span class="sd">        that needs to be spanned by the curve is 150 degrees.</span>
+<span class="sd">    guess : float, optional (default=0.5)</span>
+<span class="sd">        the initial value for the bisection search</span>
+<span class="sd">    tol : float, optional (default=1e-9)</span>
+<span class="sd">        the tolerance for ceasing bisection search</span>
+<span class="sd">    max_iters : int, optional (default=50)</span>
+<span class="sd">        the maximum iterations for bisection search</span>
+<span class="sd">    r : float, optional (default=10)</span>
+<span class="sd">        the radius for the circle. the larger this value, the more precise the</span>
+<span class="sd">        weight will be since tolerance is absolute.</span>
+<span class="sd">    segs : int, optional (defualt=100)</span>
+<span class="sd">        number of points to consider on the circle, and bezier points to compute.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    weight : float</span>
+<span class="sd">        the magnitude for scaling control points relative to start and end points.</span>
+<span class="sd">    error_np : 1D numpy.array</span>
+<span class="sd">        an array of float error values from the curve to circular radius</span>
+<span class="sd">    error : float</span>
+<span class="sd">        the max error minus min error</span>
+<span class="sd">    iterations : integer</span>
+<span class="sd">        the count of bisection search iterations</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    http://spencermortensen.com/articles/bezier-circle/</span>
+
+
+<span class="sd">               ^</span>
+<span class="sd">               | /</span>
+<span class="sd">               |/   \</span>
+<span class="sd">    h -- -- -- R    angle</span>
+<span class="sd">              / \   /</span>
+<span class="sd">             / | \</span>
+<span class="sd">            /  |  \</span>
+<span class="sd">           /  o o  \</span>
+<span class="sd">          /o   |   o\</span>
+<span class="sd">         /o    |    o\</span>
+<span class="sd">    0 - Q o----+----o S -- &gt;</span>
+<span class="sd">               0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">angle</span> <span class="o">&lt;</span> <span class="mi">180</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`angle` must be between 0 and 180, exclusive&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">guess</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`guess` must be between 0 and 1, exclusive&#39;</span><span class="p">)</span>
+
+    <span class="n">deg</span> <span class="o">=</span> <span class="p">(</span><span class="mi">180</span> <span class="o">-</span> <span class="n">angle</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">deg</span><span class="p">)</span>  <span class="c1"># half of the interior angle formed by QRS</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+    <span class="c1"># y location of acute angle QRS apex</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># x location of acute angle QRS apex</span>
+    <span class="n">kc</span> <span class="o">=</span> <span class="o">-</span><span class="n">h</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>  <span class="c1"># y value of circle center</span>
+    <span class="n">xc</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>  <span class="c1"># x value of circle and line RS tangent point</span>
+
+    <span class="n">pt0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">xc</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># position of point Q</span>
+    <span class="n">pt2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xc</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># position of point S</span>
+    <span class="n">ptm</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">])</span>  <span class="c1"># position of apex point R</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># upper bound for bisection search</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># lower bound for bisection search</span>
+
+    <span class="n">guess_gen</span> <span class="o">=</span> <span class="n">gen_new_guess</span><span class="p">(</span><span class="n">guess</span><span class="p">,</span> <span class="n">pt0</span><span class="p">,</span> <span class="n">pt2</span><span class="p">,</span> <span class="n">ptm</span><span class="p">,</span> <span class="n">kc</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">segs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iters</span><span class="p">):</span>
+
+        <span class="n">guess</span><span class="p">,</span> <span class="n">error_np</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">guess_gen</span><span class="p">)</span>
+        <span class="k">if</span> <span class="o">-</span><span class="n">tol</span> <span class="o">&lt;</span> <span class="n">error</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">guess</span><span class="p">,</span> <span class="n">error_np</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">i</span>
+
+    <span class="k">return</span> <span class="n">guess</span><span class="p">,</span> <span class="n">error_np</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">i</span></div>
+
+
+<div class="viewcode-block" id="gen_new_guess"><a class="viewcode-back" href="../../lsys.html#lsys.bezier.gen_new_guess">[docs]</a><span class="k">def</span> <span class="nf">gen_new_guess</span><span class="p">(</span><span class="n">guess</span><span class="p">,</span> <span class="n">pt0</span><span class="p">,</span> <span class="n">pt2</span><span class="p">,</span> <span class="n">ptm</span><span class="p">,</span> <span class="n">kc</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">segs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator to produce the next guess in the bisection search sequence&quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">pc1</span> <span class="o">=</span> <span class="n">ctrl_pts</span><span class="p">(</span><span class="n">pt0</span><span class="p">,</span> <span class="n">ptm</span><span class="p">,</span> <span class="n">guess</span><span class="p">)</span>  <span class="c1"># first bezier control point along QR</span>
+        <span class="n">pc2</span> <span class="o">=</span> <span class="n">ctrl_pts</span><span class="p">(</span><span class="n">pt2</span><span class="p">,</span> <span class="n">ptm</span><span class="p">,</span> <span class="n">guess</span><span class="p">)</span>  <span class="c1"># second bezier control point along RS</span>
+        <span class="c1"># build cubic bezier curve with `segs` segments</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">bezier</span><span class="p">([</span><span class="n">pt0</span><span class="p">,</span> <span class="n">pc1</span><span class="p">,</span> <span class="n">pc2</span><span class="p">,</span> <span class="n">pt2</span><span class="p">],</span> <span class="n">segs</span><span class="p">)</span>
+        <span class="c1"># determine radial distance from each bezier point to the circle center</span>
+        <span class="n">radial_dist</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">t</span> <span class="o">-</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">kc</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="c1"># radial distance from circle to bezier curve</span>
+        <span class="n">error_np</span> <span class="o">=</span> <span class="n">radial_dist</span> <span class="o">-</span> <span class="n">r</span>
+        <span class="n">tmax</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error_np</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="n">tmin</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">error_np</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">tmax</span> <span class="o">-</span> <span class="n">tmin</span><span class="p">)</span>  <span class="c1"># minimize the range with bisection search</span>
+
+        <span class="k">yield</span> <span class="n">guess</span><span class="p">,</span> <span class="n">error_np</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span>
+
+        <span class="k">if</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">guess</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">guess</span>
+        <span class="n">guess</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="bezier_xy"><a class="viewcode-back" href="../../lsys.html#lsys.bezier.bezier_xy">[docs]</a><span class="k">def</span> <span class="nf">bezier_xy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">segs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">keep_ends</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute cubic bezier curves between each set of three points</span>
+<span class="sd">    using symetric control points offset by the `weight`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : list-like</span>
+<span class="sd">        a 1D array of x values</span>
+<span class="sd">    y : list-like</span>
+<span class="sd">        a 1D array of y values</span>
+<span class="sd">    weight : float, optional (default = None)</span>
+<span class="sd">        Weight given to intermediate bezier control points. If</span>
+<span class="sd">        `None` then the weight will be determined by the `angle`</span>
+<span class="sd">    angle : float, optional (default = 90)</span>
+<span class="sd">        the interior angle for the bezier sections to traverse</span>
+<span class="sd">    segs : integer, optional (default = 100)</span>
+<span class="sd">        the number of segments for bezier curve approzimation between</span>
+<span class="sd">        each set of three points</span>
+<span class="sd">    keep_ends : bool, optional (default = True)</span>
+<span class="sd">        include start and end coordinates in output</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tx : numpy.array</span>
+<span class="sd">        an array of x values</span>
+<span class="sd">    ty : numpy.array</span>
+<span class="sd">        an array of y values</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">circular_weight</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+
+    <span class="n">_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">clump_unmasked</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">x</span><span class="p">))]</span>
+    <span class="n">_y</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">clump_unmasked</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">y</span><span class="p">))]</span>
+
+    <span class="n">tx</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ty</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">insert_nan</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">insert_nan</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">for</span> <span class="n">segx</span><span class="p">,</span> <span class="n">segy</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">_x</span><span class="p">,</span> <span class="n">_y</span><span class="p">):</span>
+
+        <span class="n">xmid</span><span class="p">,</span> <span class="n">ymid</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">midpoints</span><span class="p">(</span><span class="n">segx</span><span class="p">),</span> <span class="n">algo</span><span class="o">.</span><span class="n">midpoints</span><span class="p">(</span><span class="n">segy</span><span class="p">)</span>
+        <span class="c1"># xmid = numpy.dstack((xmid, segx[1:])).flatten()[:-1]</span>
+        <span class="c1"># ymid = numpy.dstack((ymid, segy[1:])).flatten()[:-1]</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">xmid</span><span class="p">,</span> <span class="n">ymid</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">_tx</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_ty</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">last_pt</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rng</span><span class="p">:</span>
+            <span class="n">pt</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">last_pt</span><span class="p">):</span> <span class="c1"># unsure what this is doing here.</span>
+                <span class="k">continue</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="n">ctrl_pts</span><span class="p">(</span><span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">weight</span><span class="p">)</span>
+            <span class="n">c2</span> <span class="o">=</span> <span class="n">ctrl_pts</span><span class="p">(</span><span class="n">pt</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pt</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">weight</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">bezier</span><span class="p">([</span><span class="n">pt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">pt</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span> <span class="n">segs</span><span class="p">)</span>
+            <span class="n">_tx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">_ty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">last_pt</span> <span class="o">=</span> <span class="n">pt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">tx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">segx</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_tx</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">segx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])))</span>
+        <span class="n">ty</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">segy</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_ty</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">segy</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])))</span>
+
+        <span class="k">if</span> <span class="n">insert_nan</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">[</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">]:</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">])</span>
+
+    <span class="n">tx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">tx</span><span class="p">)</span>
+    <span class="n">ty</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">ty</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_ends</span><span class="p">:</span>
+
+        <span class="n">tx</span> <span class="o">=</span> <span class="n">tx</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ty</span> <span class="o">=</span> <span class="n">ty</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Austin Orr.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

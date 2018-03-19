@@ -1,0 +1,826 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lsys.lsys &mdash; lsys 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="lsys 0.1.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> lsys
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">lsys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">lsys</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>lsys.lsys</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lsys.lsys</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">viz</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">bezier</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">algo</span>
+
+
+<div class="viewcode-block" id="Lsys"><a class="viewcode-back" href="../../lsys.html#lsys.lsys.Lsys">[docs]</a><span class="k">class</span> <span class="nc">Lsys</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This object combines the basic language and directives</span>
+<span class="sd">    necessary to construct a Lindenmayer system, compute</span>
+<span class="sd">    the coordinates based on the directives, and plot the</span>
+<span class="sd">    resulting figure.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    string :</span>
+<span class="sd">    depth</span>
+<span class="sd">    coord</span>
+<span class="sd">    x</span>
+<span class="sd">    y</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">axiom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">a0</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+        <span class="n">da</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">ds</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">unoise</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">forward</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span>
+        <span class="n">bar</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span>
+        <span class="n">right</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>
+        <span class="n">left</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span>
+        <span class="n">goto</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span>
+        <span class="n">ignore</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">memory_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># settable properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axiom</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">axiom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_axiom</span> <span class="o">=</span> <span class="n">axiom</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">rule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_a0</span> <span class="o">=</span> <span class="n">a0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da</span> <span class="o">=</span> <span class="n">da</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">ds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unoise</span> <span class="o">=</span> <span class="n">unoise</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span> <span class="o">=</span> <span class="n">forward</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bar</span> <span class="o">=</span> <span class="n">bar</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_left</span> <span class="o">=</span> <span class="n">left</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_right</span> <span class="o">=</span> <span class="n">right</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_goto</span> <span class="o">=</span> <span class="n">goto</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span> <span class="o">=</span> <span class="n">ignore</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">memory_check</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`memory_check` must be `True` or `False`.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_check</span> <span class="o">=</span> <span class="n">memory_check</span>
+
+        <span class="c1"># derived properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vocab</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depths</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_coords</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_string</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_string_stale</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># TODO: create __repr__ method</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="s2">&quot;&lt;Lsys(</span><span class="si">{}</span><span class="s2">)&gt;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;axiom&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;rule&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;depth&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;a0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;da&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;step&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ds&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;unoise&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;forward&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;bar&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;right&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;left&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;goto&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ignore&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;memory_check&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">reprs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+
+            <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="n">attr</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">attr</span>
+            <span class="n">reprs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">rep</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reprs</span><span class="p">))</span>
+
+    <span class="c1"># settable properties</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">axiom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axiom</span>
+
+    <span class="nd">@axiom</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">axiom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axiom</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_string_stale</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span>
+
+    <span class="nd">@rule</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_rule</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_string_stale</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span>
+
+    <span class="nd">@depth</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_string_stale</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">a0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a0</span>
+
+    <span class="nd">@a0</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">a0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_a0</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">da</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da</span>
+
+    <span class="nd">@da</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">da</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+
+    <span class="nd">@step</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span>
+
+    <span class="nd">@ds</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unoise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unoise</span>
+
+    <span class="nd">@unoise</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">unoise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unoise</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span>
+
+    <span class="nd">@forward</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bar</span>
+
+    <span class="nd">@bar</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bar</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">left</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_left</span>
+
+    <span class="nd">@left</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_left</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">right</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_right</span>
+
+    <span class="nd">@right</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_right</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">goto</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_goto</span>
+
+    <span class="nd">@goto</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">goto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_goto</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span>
+
+    <span class="nd">@ignore</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">memory_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memory_check</span>
+
+    <span class="nd">@memory_check</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">memory_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must set `memory_check` to `True` or `False`.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memory_check</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="c1"># derived properties</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string_stale</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axiom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">memory_check</span><span class="p">,</span>
+                                       <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_string_stale</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_string</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vocab</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vocab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_vocab</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vocab</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">commands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_commands</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">depths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_coords</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depths</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_coords</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">coords_to_xy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coord_stale</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">coords_to_xy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+
+    <span class="k">def</span> <span class="nf">_build_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compile all chars used in the vocabulary of the fractal&quot;&quot;&quot;</span>
+        <span class="n">vocab</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rule</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">vocab</span> <span class="o">+=</span> <span class="n">k</span>
+            <span class="n">vocab</span> <span class="o">+=</span> <span class="n">v</span>
+        <span class="n">vocab</span> <span class="o">+=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">axiom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goto</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">])</span>
+        <span class="n">vocab</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">vocab</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s1">&#39;the &quot;.&quot; charcter is reserved and cannot be in `vocab`.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">vocab</span>
+
+    <span class="k">def</span> <span class="nf">_build_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compile all chars used in the vocabulary of the fractal&quot;&quot;&quot;</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">cmd</span> <span class="o">+=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">goto</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Lsys.clean_rule"><a class="viewcode-back" href="../../lsys.html#lsys.lsys.Lsys.clean_rule">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">clean_rule</span><span class="p">(</span><span class="n">rule</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clean and validate the rule mapping.</span>
+
+<span class="sd">        The defaults allow syntax conventions seen in the</span>
+<span class="sd">        &quot;Algorithmic Botany&quot;, &quot;Computational Beauty of Nature&quot;, and</span>
+<span class="sd">        &quot;Matters Computational: Ideas, Algorithms, Source Code&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rule : string or dict</span>
+<span class="sd">            a mapping for expanding characters of the string.</span>
+<span class="sd">            If a string is used, the format requires a valid</span>
+<span class="sd">            separator between key and value. These include &quot;:&quot;,</span>
+<span class="sd">            &quot;=&quot;, &quot;--&gt;&quot;, &quot;-&gt;&quot;, &quot;=&gt;&quot;. If multiple rules are provided,</span>
+<span class="sd">            they must be separated by &quot;;&quot; or &quot;,&quot;.</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rule : dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">clean_rule</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rule</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">clean_rule</span><span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="n">clean_rule</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rule</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">rule</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+            <span class="n">seps</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="s2">&quot;--&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;=&gt;&quot;</span><span class="p">]</span>
+            <span class="n">divs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">]</span>
+            <span class="n">clean_rule</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="ow">in</span> <span class="n">rule</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">seps</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">seps</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">rule</span><span class="p">:</span>
+                        <span class="n">rule</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid rule syntax, use </span><span class="si">{}</span><span class="s1"> &#39;</span>
+                                 <span class="s1">&#39;to assign rules.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seps</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">divs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">rule</span><span class="p">:</span>
+                    <span class="n">rule</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+            <span class="n">rules_tmp</span> <span class="o">=</span> <span class="n">rule</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rules_tmp</span><span class="p">:</span>
+                <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+                <span class="n">clean_rule</span><span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="n">clean_rule</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`rule` must be string or mapping&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Lsys.expand"><a class="viewcode-back" href="../../lsys.html#lsys.lsys.Lsys.expand">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="n">axiom</span><span class="p">,</span> <span class="n">rule</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="n">memory_check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        String expansion implemting `rule` on `axiom` for `depth` iterations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axiom : string</span>
+<span class="sd">            the starting string</span>
+<span class="sd">        rule : dict</span>
+<span class="sd">            the rules for expanding the characters of the string</span>
+<span class="sd">        depth : integer</span>
+<span class="sd">            the number of times to perform the expansion</span>
+<span class="sd">        bar : string, optional (default = &quot;|&quot;)</span>
+<span class="sd">            the character to indicate that a calculation should be done</span>
+<span class="sd">            by the parser based on the present depth of the string expansion</span>
+<span class="sd">        memory_check : bool, optional (default = True)</span>
+<span class="sd">            stop expanding when things get too large</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        string : str</span>
+<span class="sd">            the string expansion for the given depth</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">depth</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">memory_check</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">axiom</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">5e6</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">MemoryError</span><span class="p">(</span><span class="s2">&quot;Maximum `depth` is: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">axiom</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">axiom</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">rule</span><span class="p">:</span>
+                        <span class="n">output</span> <span class="o">+=</span> <span class="n">rule</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">output</span> <span class="o">+=</span> <span class="n">c</span>
+            <span class="c1"># axiom = output.replace(bar, str(i + 1) + &#39;.&#39;)</span>
+            <span class="c1"># this broke tests. check CBN to see if the ds values are given.</span>
+            <span class="n">axiom</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">bar</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">axiom</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">bar</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_compute_bezier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bezier_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">keep_ends</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;compute new bezier curves</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_y</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">bezier_xy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                                                          <span class="n">angle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">da</span><span class="p">,</span>
+                                                          <span class="n">weight</span><span class="o">=</span><span class="n">bezier_weight</span><span class="p">,</span>
+                                                          <span class="n">segs</span><span class="o">=</span><span class="n">segs</span><span class="p">,</span>
+                                                          <span class="n">keep_ends</span><span class="o">=</span><span class="n">keep_ends</span><span class="p">,</span>
+                                                          <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_coords</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">xy_to_coords</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bezier_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_y</span>
+
+<div class="viewcode-block" id="Lsys.compute_coords"><a class="viewcode-back" href="../../lsys.html#lsys.lsys.Lsys.compute_coords">[docs]</a>    <span class="k">def</span> <span class="nf">compute_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse the string and convert to data coordinates for rendering.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self : lsys.Lsys()</span>
+<span class="sd">            uses most of the attributes from the class constructor</span>
+<span class="sd">            to parse the expanded string and turn it into coordinates</span>
+<span class="sd">            for a plotter.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        x_y : numpy.array</span>
+
+<span class="sd">        depths : numpy.array</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a0</span><span class="p">)</span>
+        <span class="n">da</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">da</span><span class="p">)</span>
+        <span class="n">depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span>
+        <span class="n">unoise</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unoise</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span>
+        <span class="n">forward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span>
+        <span class="n">bar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">left</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span>
+        <span class="n">goto</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">goto</span>
+        <span class="n">ignore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span>
+
+        <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-9</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sy</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">x_y</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">depths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="n">num</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="n">forward</span> <span class="o">+</span> <span class="n">bar</span> <span class="o">+</span> <span class="n">goto</span><span class="p">):</span>
+
+                    <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">bar</span><span class="p">:</span>
+                        <span class="n">pres_depth</span> <span class="o">=</span> <span class="n">num</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">pres_depth</span> <span class="o">=</span> <span class="n">depth</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">step</span> <span class="o">*</span> <span class="n">ds</span><span class="o">**</span><span class="n">pres_depth</span> <span class="o">*</span> <span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">unoise</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+                    <span class="n">sy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">algo</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">unoise</span><span class="p">))</span> <span class="o">*</span> <span class="n">s</span>
+                    <span class="n">sx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">algo</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">unoise</span><span class="p">))</span> <span class="o">*</span> <span class="n">s</span>
+
+                    <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">goto</span><span class="p">:</span>
+                        <span class="n">x_y</span><span class="o">.</span><span class="n">append</span><span class="p">(([</span><span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">]))</span>
+                        <span class="n">depths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pres_depth</span><span class="p">)</span>
+                        <span class="k">pass</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ax</span> <span class="o">=</span> <span class="n">x</span> <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="k">else</span> <span class="mi">0</span>
+                        <span class="n">ay</span> <span class="o">=</span> <span class="n">y</span> <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="k">else</span> <span class="mi">0</span>
+                        <span class="n">bx</span> <span class="o">=</span> <span class="n">sx</span> <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="k">else</span> <span class="mi">0</span>
+                        <span class="n">by</span> <span class="o">=</span> <span class="n">sy</span> <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sy</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="k">else</span> <span class="mi">0</span>
+                        <span class="n">x_y</span><span class="o">.</span><span class="n">append</span><span class="p">(([</span><span class="n">ax</span><span class="p">,</span> <span class="n">ay</span><span class="p">],</span> <span class="p">[</span><span class="n">bx</span><span class="p">,</span> <span class="n">by</span><span class="p">]))</span>
+                        <span class="n">depths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pres_depth</span><span class="p">)</span>
+
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">sx</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">sy</span>
+
+                    <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="n">right</span> <span class="o">+</span> <span class="n">left</span><span class="p">):</span>
+                    <span class="n">num</span> <span class="o">=</span> <span class="n">num</span> <span class="ow">or</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
+                        <span class="n">a</span> <span class="o">-=</span> <span class="n">da</span> <span class="o">*</span> <span class="n">num</span> <span class="o">*</span> <span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">unoise</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">a</span> <span class="o">+=</span> <span class="n">da</span> <span class="o">*</span> <span class="n">num</span> <span class="o">*</span> <span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">unoise</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">&#39;[&#39;</span><span class="p">:</span>
+
+                    <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">algo</span><span class="o">.</span><span class="n">add_noise</span><span class="p">(</span><span class="n">unoise</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">5</span><span class="p">))))</span>
+
+                <span class="k">elif</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">&#39;]&#39;</span><span class="p">:</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+                    <span class="n">x_y</span><span class="o">.</span><span class="n">append</span><span class="p">(([</span><span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span>
+                                <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">]))</span>
+
+                    <span class="n">depths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pres_depth</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="n">ignore</span> <span class="o">+=</span> <span class="n">c</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The </span><span class="si">{}</span><span class="s2"> character was ignored&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+
+                <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_y</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">depths</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_y</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">depths</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Lsys.plot_bezier"><a class="viewcode-back" href="../../lsys.html#lsys.lsys.Lsys.plot_bezier">[docs]</a>    <span class="k">def</span> <span class="nf">plot_bezier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bezier_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">as_lc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">pad</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">keep_ends</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bezier</span><span class="p">(</span>
+            <span class="n">bezier_weight</span><span class="o">=</span><span class="n">bezier_weight</span><span class="p">,</span> <span class="n">segs</span><span class="o">=</span><span class="n">segs</span><span class="p">,</span> <span class="n">keep_ends</span><span class="o">=</span><span class="n">keep_ends</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">as_lc</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">plot_line_collection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bezier_coords</span><span class="p">,</span>
+                                            <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span>
+                                            <span class="n">square</span><span class="o">=</span><span class="n">square</span><span class="p">,</span>
+                                            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bezier_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bezier_y</span><span class="p">,</span>
+                        <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="n">square</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Lsys.plot"><a class="viewcode-back" href="../../lsys.html#lsys.lsys.Lsys.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_lc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">as_lc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">plot_line_collection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coords</span><span class="p">,</span>
+                                            <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span>
+                                            <span class="n">square</span><span class="o">=</span><span class="n">square</span><span class="p">,</span>
+                                            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">viz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="n">pad</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="n">square</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Austin Orr.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
