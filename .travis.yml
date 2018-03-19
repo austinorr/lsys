@@ -50,7 +50,7 @@ install:
   - conda install --yes --channel=conda-forge ${TESTERS}
   - pip install pytest-mpl>=0.8
   - if [ ${COVERAGE} = true ]; then
-      pip install pytest-cov>=2.5
+      pip install pytest-cov>=2.5;
       pip install codecov;
     fi
   - pip install .
