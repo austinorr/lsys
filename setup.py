@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Usage: $pip install .
-
+import os
 from setuptools import setup, find_packages
 
 def get_pkg_info(info_file, info):
