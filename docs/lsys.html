@@ -1,0 +1,923 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lsys package &mdash; lsys 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="lsys 0.1.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> lsys
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">lsys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">lsys</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>lsys package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lsys.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lsys-package">
+<h1>lsys package<a class="headerlink" href="#lsys-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lsys.tests.html">lsys.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lsys.tests.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lsys.tests.baseline_images.html">lsys.tests.baseline_images package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lsys.tests.baseline_images.html#subpackages">Subpackages</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="lsys.tests.baseline_images.html#module-lsys.tests.baseline_images">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lsys.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lsys.tests.html#module-lsys.tests.test_algo">lsys.tests.test_algo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lsys.tests.html#module-lsys.tests.test_bezier">lsys.tests.test_bezier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lsys.tests.html#module-lsys.tests.test_lsys">lsys.tests.test_lsys module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lsys.tests.html#test-lsys">test_lsys</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lsys.tests.html#module-lsys.tests.test_validate">lsys.tests.test_validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lsys.tests.html#module-lsys.tests.test_viz">lsys.tests.test_viz module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lsys.tests.html#module-lsys.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lsys.algo">
+<span id="lsys-algo-module"></span><h2>lsys.algo module<a class="headerlink" href="#module-lsys.algo" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lsys.algo.add_noise">
+<code class="descclassname">lsys.algo.</code><code class="descname">add_noise</code><span class="sig-paren">(</span><em>num</em>, <em>scale=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/algo.html#add_noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.algo.add_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>produces a random value distributed normally between +- num</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.algo.coords_to_xy">
+<code class="descclassname">lsys.algo.</code><code class="descname">coords_to_xy</code><span class="sig-paren">(</span><em>coords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/algo.html#coords_to_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.algo.coords_to_xy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coords</strong> (<em>numpy.array</em>) – a 2D array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>x</strong> (<em>numpy.array</em>) – a 1D array</li>
+<li><em>y</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.algo.midpoints">
+<code class="descclassname">lsys.algo.</code><code class="descname">midpoints</code><span class="sig-paren">(</span><em>np_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/algo.html#midpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.algo.midpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts np array to an array of midpoints ignoring</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>np_array</strong> (<em>array-like</em>) – 1-dimensional data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The length of the output is one less than
+the length of the input array.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">1-D numpy.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.algo.xy_to_coords">
+<code class="descclassname">lsys.algo.</code><code class="descname">xy_to_coords</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>stride=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/algo.html#xy_to_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.algo.xy_to_coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-lsys.bezier">
+<span id="lsys-bezier-module"></span><h2>lsys.bezier module<a class="headerlink" href="#module-lsys.bezier" title="Permalink to this headline">¶</a></h2>
+<p>This module has functions helpful in the construction of general
+bezier curves, as well as fitting cubic bezier curves between
+vertices calculated by the :class:<code class="docutils literal"><span class="pre">lsys.Lsys</span></code></p>
+<p>In addition, this module contains the code used to determine the
+symetric weight factor needed to determine the position of control
+points that form near-circular curves between three points with
+an arbitrary interior angle, buiding on the work documented
+<a class="reference external" href="http://spencermortensen.com/articles/bezier-circle/">here</a>.</p>
+<dl class="function">
+<dt id="lsys.bezier.bezier">
+<code class="descclassname">lsys.bezier.</code><code class="descname">bezier</code><span class="sig-paren">(</span><em>points</em>, <em>segs=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/bezier.html#bezier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.bezier.bezier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes nth order bezier curves through the <cite>points</cite> provided
+and returns the curve as a list of points to produce line segments.</p>
+<p>The order of the bezier curve is determined by the length of
+the list of points. The length of the output curve numpy.array is
+equal to <cite>segs</cite> + 1, such that <cite>segs</cite> is equal to the number of
+line segments between the points of the array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>points</strong> (<em>list-like</em>) – 2D array</li>
+<li><strong>segs</strong> (<em>integer</em><em>, </em><em>optional</em><em> (</em><em>default = 100</em><em>)</em>) – The number of line segments to approximate bezier curve</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>curve</strong> (<em>numpy.array</em>) – 2D array of points along the curve.</li>
+<li><em>Reference</em></li>
+<li><em>———</em></li>
+<li><strong>https</strong> (<em>//gist.github.com/Juanlu001/7284462</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.bezier.bezier_xy">
+<code class="descclassname">lsys.bezier.</code><code class="descname">bezier_xy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>weight=None</em>, <em>angle=90</em>, <em>segs=100</em>, <em>keep_ends=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/bezier.html#bezier_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.bezier.bezier_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute cubic bezier curves between each set of three points
+using symetric control points offset by the <cite>weight</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>list-like</em>) – a 1D array of x values</li>
+<li><strong>y</strong> (<em>list-like</em>) – a 1D array of y values</li>
+<li><strong>weight</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default = None</em><em>)</em>) – Weight given to intermediate bezier control points. If
+<cite>None</cite> then the weight will be determined by the <cite>angle</cite></li>
+<li><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default = 90</em><em>)</em>) – the interior angle for the bezier sections to traverse</li>
+<li><strong>segs</strong> (<em>integer</em><em>, </em><em>optional</em><em> (</em><em>default = 100</em><em>)</em>) – the number of segments for bezier curve approzimation between
+each set of three points</li>
+<li><strong>keep_ends</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default = True</em><em>)</em>) – include start and end coordinates in output</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>tx</strong> (<em>numpy.array</em>) – an array of x values</li>
+<li><strong>ty</strong> (<em>numpy.array</em>) – an array of y values</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.bezier.binomial">
+<code class="descclassname">lsys.bezier.</code><code class="descname">binomial</code><span class="sig-paren">(</span><em>n</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/bezier.html#binomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.bezier.binomial" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> (<em>integer</em>) – the order of the binomial to expand</li>
+<li><strong>k</strong> (<em>integer</em>) – the zero indexed position of the binomial expansion
+coefficient to return</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>coefficient</strong> (<em>integer</em>) – coefficient for the nth order binomial expansion, kth term</li>
+<li><strong>reference</strong> (<em>http://pomax.github.io/bezierinfo/</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.bezier.circular_weight">
+<code class="descclassname">lsys.bezier.</code><code class="descname">circular_weight</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/bezier.html#circular_weight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.bezier.circular_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function utilizes the precomputed circular bezier function
+with a fit to a 10th order curve created by the following code block:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+    <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bezier</span><span class="o">.</span><span class="n">find_circular_weight</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span> <span class="n">max_iters</span><span class="o">=</span><span class="mi">500</span><span class="p">))</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>angle</strong> (<em>float</em>) – enter the angle to be traversed in degrees</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>weight</strong> – Weight value for calculating bezier control points that
+approximate a circular curve.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.bezier.ctrl_pts">
+<code class="descclassname">lsys.bezier.</code><code class="descname">ctrl_pts</code><span class="sig-paren">(</span><em>p0</em>, <em>p1</em>, <em>w</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/bezier.html#ctrl_pts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.bezier.ctrl_pts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the position of a new point along vector
+<cite>p0</cite> to <cite>p1</cite> with magnitude <cite>w</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p0</strong> (<em>1D array</em>) – the starting point</li>
+<li><strong>p1</strong> (<em>1D array</em>) – the end point</li>
+<li><strong>w</strong> (<em>float</em>) – the weight factor</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>point</strong> – a point along vector <cite>p0</cite> to <cite>p1</cite> with magnitude <cite>w</cite></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">1D array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.bezier.find_circular_weight">
+<code class="descclassname">lsys.bezier.</code><code class="descname">find_circular_weight</code><span class="sig-paren">(</span><em>angle</em>, <em>guess=0.5</em>, <em>tol=1e-09</em>, <em>max_iters=50</em>, <em>r=10</em>, <em>segs=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/bezier.html#find_circular_weight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.bezier.find_circular_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds weight factor for bezier control points such that the <cite>angle</cite>
+QRS will be filled with cubic bezier curve approximating a circle
+that is tangent at the points Q and S.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<em>float</em>) – the turn angle in degrees. e.g., if turn angle is 30 degrees, then the angle
+that needs to be spanned by the curve is 150 degrees.</li>
+<li><strong>guess</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default=0.5</em><em>)</em>) – the initial value for the bisection search</li>
+<li><strong>tol</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default=1e-9</em><em>)</em>) – the tolerance for ceasing bisection search</li>
+<li><strong>max_iters</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>default=50</em><em>)</em>) – the maximum iterations for bisection search</li>
+<li><strong>r</strong> (<em>float</em><em>, </em><em>optional</em><em> (</em><em>default=10</em><em>)</em>) – the radius for the circle. the larger this value, the more precise the
+weight will be since tolerance is absolute.</li>
+<li><strong>segs</strong> (<em>int</em><em>, </em><em>optional</em><em> (</em><em>defualt=100</em><em>)</em>) – number of points to consider on the circle, and bezier points to compute.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>weight</strong> (<em>float</em>) – the magnitude for scaling control points relative to start and end points.</li>
+<li><strong>error_np</strong> (<em>1D numpy.array</em>) – an array of float error values from the curve to circular radius</li>
+<li><strong>error</strong> (<em>float</em>) – the max error minus min error</li>
+<li><strong>iterations</strong> (<em>integer</em>) – the count of bisection search iterations</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p><a class="reference external" href="http://spencermortensen.com/articles/bezier-circle/">http://spencermortensen.com/articles/bezier-circle/</a></p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div>^
+| /
+<a href="#id1"><span class="problematic" id="id2">|</span></a>/       h – – – R    angle</div></blockquote>
+<p>/   /</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>/ |             /  |             /  o o            /o   |   o         /o    |    o    0 - Q o—-+—-o S – &gt;</dt>
+<dd>0</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.bezier.gen_new_guess">
+<code class="descclassname">lsys.bezier.</code><code class="descname">gen_new_guess</code><span class="sig-paren">(</span><em>guess</em>, <em>pt0</em>, <em>pt2</em>, <em>ptm</em>, <em>kc</em>, <em>r</em>, <em>a</em>, <em>b</em>, <em>segs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/bezier.html#gen_new_guess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.bezier.gen_new_guess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator to produce the next guess in the bisection search sequence</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.bezier.poly">
+<code class="descclassname">lsys.bezier.</code><code class="descname">poly</code><span class="sig-paren">(</span><em>n</em>, <em>k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/bezier.html#poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.bezier.poly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expands binomial and computes value at <cite>t</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> (<em>integer</em>) – nth order of polynomial</li>
+<li><strong>k</strong> (<em>integer</em>) – positional term for binomial expansion coefficient</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>value</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float or list of floats</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference external" href="https://gist.github.com/Juanlu001/7284462">https://gist.github.com/Juanlu001/7284462</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="lsys-cli-module">
+<h2>lsys.cli module<a class="headerlink" href="#lsys-cli-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lsys.fractals">
+<span id="lsys-fractals-module"></span><h2>lsys.fractals module<a class="headerlink" href="#module-lsys.fractals" title="Permalink to this headline">¶</a></h2>
+<p>These are pre-built fractal definitions as dictionaries, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs</p>
+</div>
+<div class="section" id="module-lsys.lsys">
+<span id="lsys-lsys-module"></span><h2>lsys.lsys module<a class="headerlink" href="#module-lsys.lsys" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lsys.lsys.Lsys">
+<em class="property">class </em><code class="descclassname">lsys.lsys.</code><code class="descname">Lsys</code><span class="sig-paren">(</span><em>axiom=None</em>, <em>rule=None</em>, <em>depth=0</em>, <em>a0=90</em>, <em>da=0</em>, <em>step=1</em>, <em>ds=1</em>, <em>unoise=0</em>, <em>forward=’F’</em>, <em>bar=’|’</em>, <em>right=’+’</em>, <em>left=’-‘</em>, <em>goto=’G’</em>, <em>ignore=”</em>, <em>memory_check=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/lsys.html#Lsys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.lsys.Lsys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This object combines the basic language and directives
+necessary to construct a Lindenmayer system, compute
+the coordinates based on the directives, and plot the
+resulting figure.</p>
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.string">
+<code class="descname">string</code><a class="headerlink" href="#lsys.lsys.Lsys.string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.depth">
+<code class="descname">depth</code><a class="headerlink" href="#lsys.lsys.Lsys.depth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.coord">
+<code class="descname">coord</code><a class="headerlink" href="#lsys.lsys.Lsys.coord" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.x">
+<code class="descname">x</code><a class="headerlink" href="#lsys.lsys.Lsys.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.y">
+<code class="descname">y</code><a class="headerlink" href="#lsys.lsys.Lsys.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">References</p>
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.a0">
+<code class="descname">a0</code><a class="headerlink" href="#lsys.lsys.Lsys.a0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.axiom">
+<code class="descname">axiom</code><a class="headerlink" href="#lsys.lsys.Lsys.axiom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.bar">
+<code class="descname">bar</code><a class="headerlink" href="#lsys.lsys.Lsys.bar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lsys.lsys.Lsys.clean_rule">
+<em class="property">static </em><code class="descname">clean_rule</code><span class="sig-paren">(</span><em>rule</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/lsys.html#Lsys.clean_rule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.lsys.Lsys.clean_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean and validate the rule mapping.</p>
+<p>The defaults allow syntax conventions seen in the
+“Algorithmic Botany”, “Computational Beauty of Nature”, and
+“Matters Computational: Ideas, Algorithms, Source Code”</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rule</strong> (<a class="reference internal" href="#lsys.lsys.Lsys.string" title="lsys.lsys.Lsys.string"><em>string</em></a><em> or </em><em>dict</em>) – a mapping for expanding characters of the string.
+If a string is used, the format requires a valid
+separator between key and value. These include “:”,
+“=”, “–&gt;”, “-&gt;”, “=&gt;”. If multiple rules are provided,
+they must be separated by “;” or “,”.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>rule</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.commands">
+<code class="descname">commands</code><a class="headerlink" href="#lsys.lsys.Lsys.commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lsys.lsys.Lsys.compute_coords">
+<code class="descname">compute_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/lsys.html#Lsys.compute_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.lsys.Lsys.compute_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the string and convert to data coordinates for rendering.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>self</strong> (<a class="reference internal" href="#lsys.lsys.Lsys" title="lsys.lsys.Lsys"><em>lsys.Lsys</em></a><em>(</em><em>)</em>) – uses most of the attributes from the class constructor
+to parse the expanded string and turn it into coordinates
+for a plotter.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>x_y</strong> (<em>numpy.array</em>)</li>
+<li><strong>depths</strong> (<em>numpy.array</em>)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.coords">
+<code class="descname">coords</code><a class="headerlink" href="#lsys.lsys.Lsys.coords" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.da">
+<code class="descname">da</code><a class="headerlink" href="#lsys.lsys.Lsys.da" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">depth</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.depths">
+<code class="descname">depths</code><a class="headerlink" href="#lsys.lsys.Lsys.depths" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.ds">
+<code class="descname">ds</code><a class="headerlink" href="#lsys.lsys.Lsys.ds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lsys.lsys.Lsys.expand">
+<em class="property">static </em><code class="descname">expand</code><span class="sig-paren">(</span><em>axiom</em>, <em>rule</em>, <em>depth</em>, <em>bar=’|’</em>, <em>memory_check=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/lsys.html#Lsys.expand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.lsys.Lsys.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>String expansion implemting <cite>rule</cite> on <cite>axiom</cite> for <cite>depth</cite> iterations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axiom</strong> (<a class="reference internal" href="#lsys.lsys.Lsys.string" title="lsys.lsys.Lsys.string"><em>string</em></a>) – the starting string</li>
+<li><strong>rule</strong> (<em>dict</em>) – the rules for expanding the characters of the string</li>
+<li><strong>depth</strong> (<em>integer</em>) – the number of times to perform the expansion</li>
+<li><strong>bar</strong> (<a class="reference internal" href="#lsys.lsys.Lsys.string" title="lsys.lsys.Lsys.string"><em>string</em></a><em>, </em><em>optional</em><em> (</em><em>default = &quot;|&quot;</em><em>)</em>) – the character to indicate that a calculation should be done
+by the parser based on the present depth of the string expansion</li>
+<li><strong>memory_check</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default = True</em><em>)</em>) – stop expanding when things get too large</li>
+<li><strong>Returns</strong> – </li>
+<li><strong>string</strong> (<em>str</em>) – the string expansion for the given depth</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.forward">
+<code class="descname">forward</code><a class="headerlink" href="#lsys.lsys.Lsys.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.goto">
+<code class="descname">goto</code><a class="headerlink" href="#lsys.lsys.Lsys.goto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.ignore">
+<code class="descname">ignore</code><a class="headerlink" href="#lsys.lsys.Lsys.ignore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.left">
+<code class="descname">left</code><a class="headerlink" href="#lsys.lsys.Lsys.left" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.memory_check">
+<code class="descname">memory_check</code><a class="headerlink" href="#lsys.lsys.Lsys.memory_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lsys.lsys.Lsys.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>as_lc=False</em>, <em>pad=5</em>, <em>square=True</em>, <em>ax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/lsys.html#Lsys.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.lsys.Lsys.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lsys.lsys.Lsys.plot_bezier">
+<code class="descname">plot_bezier</code><span class="sig-paren">(</span><em>bezier_weight=None</em>, <em>segs=100</em>, <em>as_lc=False</em>, <em>pad=5</em>, <em>square=True</em>, <em>keep_ends=True</em>, <em>ax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/lsys.html#Lsys.plot_bezier"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.lsys.Lsys.plot_bezier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.right">
+<code class="descname">right</code><a class="headerlink" href="#lsys.lsys.Lsys.right" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.rule">
+<code class="descname">rule</code><a class="headerlink" href="#lsys.lsys.Lsys.rule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.step">
+<code class="descname">step</code><a class="headerlink" href="#lsys.lsys.Lsys.step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">string</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.unoise">
+<code class="descname">unoise</code><a class="headerlink" href="#lsys.lsys.Lsys.unoise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lsys.lsys.Lsys.vocab">
+<code class="descname">vocab</code><a class="headerlink" href="#lsys.lsys.Lsys.vocab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">x</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">y</code></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lsys.validate">
+<span id="lsys-validate-module"></span><h2>lsys.validate module<a class="headerlink" href="#module-lsys.validate" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lsys.validate.axes_object">
+<code class="descclassname">lsys.validate.</code><code class="descname">axes_object</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/validate.html#axes_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.validate.axes_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a value if an Axes. If None, a new one is created.
+Both the figure and axes are returned (in that order).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.validate.is_np">
+<code class="descclassname">lsys.validate.</code><code class="descname">is_np</code><span class="sig-paren">(</span><em>listlike</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/validate.html#is_np"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.validate.is_np" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-lsys.viz">
+<span id="lsys-viz-module"></span><h2>lsys.viz module<a class="headerlink" href="#module-lsys.viz" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="lsys.viz.get_coord_lims">
+<code class="descclassname">lsys.viz.</code><code class="descname">get_coord_lims</code><span class="sig-paren">(</span><em>coords</em>, <em>pad=5</em>, <em>square=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/viz.html#get_coord_lims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.viz.get_coord_lims" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="lsys.viz.get_xy_lims">
+<code class="descclassname">lsys.viz.</code><code class="descname">get_xy_lims</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>pad=5</em>, <em>square=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/viz.html#get_xy_lims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.viz.get_xy_lims" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="lsys.viz.make_colormap">
+<code class="descclassname">lsys.viz.</code><code class="descname">make_colormap</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/viz.html#make_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.viz.make_colormap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a LinearSegmentedColormap with colors defined as the sequence.</p>
+<p>The sequence red to blue can be defined as:
+<cite>make_colormap([‘red’, ‘blue’])</cite>
+or equivalently
+<cite>make_colormap([(1,0,0), ‘blue’])</cite></p>
+<p>For more control over color transitions, floats can be included after pairs
+of colors to indicate the percentage of the color map that the transition
+should take place.</p>
+<p><cite>make_colormap([‘red’, ‘green’, .25, ‘green’, ‘blue’])</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>seq</strong> (<em>list</em>) – a sequence of floats, strings, or RGB-tuples.
+The floats should be in increasing order
+and in the interval (0, 1).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>cmap</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">matplotlib.colors.LinearSegmentedColormap</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p class="rubric">References</p>
+<p><a class="reference external" href="http://stackoverflow.com/questions/16834861/create-own-colormap-using-matplotlib-and-plot-color-scale">http://stackoverflow.com/questions/16834861/create-own-colormap-using-matplotlib-and-plot-color-scale</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.viz.pad_lim">
+<code class="descclassname">lsys.viz.</code><code class="descname">pad_lim</code><span class="sig-paren">(</span><em>lim</em>, <em>pad=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/viz.html#pad_lim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.viz.pad_lim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="lsys.viz.plot">
+<code class="descclassname">lsys.viz.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>pad=5</em>, <em>square=False</em>, <em>ax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/viz.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.viz.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots ‘x’ vs ‘y’ and optionally computes the limits
+of the axes based on the input data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy.array</em>) – 1D numpy array of points</li>
+<li><strong>y</strong> (<em>numpy.array</em>) – 1D numpy array of points</li>
+<li><strong>pad</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>optional</em><em> (</em><em>default = 5</em><em>)</em>) – the percent spacing between plot data and axes lines. This can be used
+to zoom the plot. This is only applied if ‘square’ is ‘True’
+#TODO: figure out how to make this also pan the plot.</li>
+<li><strong>square</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default = False</em><em>)</em>) – whether to make the output plot a square with equal aspect
+ratios for the axes.</li>
+<li><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em>, </em><em>optional</em><em> (</em><em>default = None</em><em>)</em>) – the axes artist for plotting. If <cite>None</cite> is given, a new figure
+will be created.</li>
+<li><strong>kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – all remaining keyword arguments are passed into the <cite>plot()</cite> command</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ax</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">matplotlib.axes.Axes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.viz.plot_line_collection">
+<code class="descclassname">lsys.viz.</code><code class="descname">plot_line_collection</code><span class="sig-paren">(</span><em>coords</em>, <em>pad=5</em>, <em>square=False</em>, <em>ax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/viz.html#plot_line_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.viz.plot_line_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a 2d array of points as a <cite>matplotlib.LineCollection</cite> and computes
+the limits of the axes based on the input data, since this is not handled
+by matplotlib by default.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>coords</strong> (<em>numpy.array</em>) – 2D numpy array of points</li>
+<li><strong>pad</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>optional</em><em> (</em><em>default = 5</em><em>)</em>) – the percent spacing between plot data and axes lines. This can be used
+to zoom the plot.
+#TODO: figure out how to make this also pan the plot.</li>
+<li><strong>square</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default = False</em><em>)</em>) – whether to make the output plot a square with equal aspect
+ratios for the axes.</li>
+<li><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em>, </em><em>optional</em><em> (</em><em>default = None</em><em>)</em>) – the axes artist for plotting. If <cite>None</cite> is given, a new figure
+will be created.</li>
+<li><strong>kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – all remaining keyword arguments are passed into the <code class="xref py py-class docutils literal"><span class="pre">LineCollection</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ax</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">matplotlib.axes.Axes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lsys.viz.square_aspect">
+<code class="descclassname">lsys.viz.</code><code class="descname">square_aspect</code><span class="sig-paren">(</span><em>xlim</em>, <em>ylim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lsys/viz.html#square_aspect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lsys.viz.square_aspect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the limits to produce a square plot if all axes are
+equal scale.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lsys">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lsys" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Austin Orr.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

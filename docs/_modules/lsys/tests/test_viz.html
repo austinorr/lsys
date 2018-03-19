@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lsys.tests.test_viz &mdash; lsys 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="lsys 0.1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="lsys.tests" href="../tests.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> lsys
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">lsys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">lsys</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../tests.html">lsys.tests</a> &raquo;</li>
+        
+      <li>lsys.tests.test_viz</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lsys.tests.test_viz</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span>
+
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="kn">import</span> <span class="nn">lsys</span>
+<span class="kn">from</span> <span class="nn">lsys</span> <span class="k">import</span> <span class="n">viz</span>
+<span class="kn">from</span> <span class="nn">lsys</span> <span class="k">import</span> <span class="n">algo</span>
+
+<span class="n">BASELINE_DIR</span> <span class="o">=</span> <span class="s1">&#39;baseline_images/test_viz&#39;</span>
+<span class="n">TOLERANCE</span> <span class="o">=</span> <span class="mi">15</span>
+
+<span class="n">plotData</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="mf">3.113</span><span class="p">,</span>   <span class="mf">3.606</span><span class="p">,</span>   <span class="mf">4.046</span><span class="p">,</span>   <span class="mf">4.046</span><span class="p">,</span>   <span class="mf">4.710</span><span class="p">,</span>   <span class="mf">6.140</span><span class="p">,</span>   <span class="mf">6.978</span><span class="p">,</span>
+    <span class="mf">2.000</span><span class="p">,</span>   <span class="mf">4.200</span><span class="p">,</span>   <span class="mf">4.620</span><span class="p">,</span>   <span class="mf">5.570</span><span class="p">,</span>   <span class="mf">5.660</span><span class="p">,</span>   <span class="mf">5.860</span><span class="p">,</span>   <span class="mf">6.650</span><span class="p">,</span>
+    <span class="mf">6.780</span><span class="p">,</span>   <span class="mf">6.790</span><span class="p">,</span>   <span class="mf">7.500</span><span class="p">,</span>   <span class="mf">7.500</span><span class="p">,</span>   <span class="mf">7.500</span><span class="p">,</span>   <span class="mf">8.630</span><span class="p">,</span>   <span class="mf">8.710</span><span class="p">,</span>
+    <span class="mf">8.990</span><span class="p">,</span>   <span class="mf">9.850</span><span class="p">,</span>   <span class="mf">10.820</span><span class="p">,</span>  <span class="mf">11.250</span><span class="p">,</span>  <span class="mf">11.250</span><span class="p">,</span>  <span class="mf">12.200</span><span class="p">,</span>  <span class="mf">14.920</span><span class="p">,</span>
+    <span class="mf">16.770</span><span class="p">,</span>  <span class="mf">17.810</span><span class="p">,</span>  <span class="mf">19.160</span><span class="p">,</span>  <span class="mf">19.190</span><span class="p">,</span>  <span class="mf">19.640</span><span class="p">,</span>  <span class="mf">20.180</span><span class="p">,</span>  <span class="mf">22.970</span><span class="p">,</span>
+<span class="p">])</span>
+
+
+<div class="viewcode-block" id="test_square_aspect"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_viz.test_square_aspect">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="p">(</span><span class="s1">&#39;xlim&#39;</span><span class="p">,</span> <span class="s1">&#39;ylim&#39;</span><span class="p">,</span> <span class="s1">&#39;expected&#39;</span><span class="p">),</span> <span class="p">[</span>
+        <span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="mi">10</span><span class="p">])),</span>
+        <span class="p">([</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">([</span><span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">12.5</span><span class="p">,</span> <span class="mf">17.5</span><span class="p">]))</span>
+    <span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_square_aspect</span><span class="p">(</span><span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">viz</span><span class="o">.</span><span class="n">square_aspect</span><span class="p">(</span><span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="n">expected</span></div>
+
+
+<div class="viewcode-block" id="test_square_aspect2"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_viz.test_square_aspect2">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">mpl_image_compare</span><span class="p">(</span><span class="n">baseline_dir</span><span class="o">=</span><span class="n">BASELINE_DIR</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">TOLERANCE</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_square_aspect2</span><span class="p">():</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">plotData</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="o">*</span> <span class="mi">5</span>
+
+    <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y0</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span> <span class="o">=</span> <span class="n">viz</span><span class="o">.</span><span class="n">square_aspect</span><span class="p">([</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">],</span> <span class="p">[</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">])</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">viz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="test_make_colormap_plot"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_viz.test_make_colormap_plot">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s1">&#39;seq&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="o">.</span><span class="mi">66</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
+    <span class="p">])</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">mpl_image_compare</span><span class="p">(</span><span class="n">baseline_dir</span><span class="o">=</span><span class="n">BASELINE_DIR</span><span class="p">,</span>
+                               <span class="n">tolerance</span><span class="o">=</span><span class="n">TOLERANCE</span><span class="p">,</span>
+                               <span class="n">remove_text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_make_colormap_plot</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">viz</span><span class="o">.</span><span class="n">make_colormap</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">array_dg</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">array_dg</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">array_dg</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">array_dg</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">cbar</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cax</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="test_plot_lsys"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_viz.test_plot_lsys">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s1">&#39;fractal&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;Bush1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Bush2&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Crosses&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Dragon&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Dragon45&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Gosper&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Hexdragon&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Hilbert&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Penrose_Snowflake&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Plant_a&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Plant_b&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Plant_c&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Plant_d&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Plant_e&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Plant_f&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Putmans_Tattoo&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;QuadKochIsland&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Serpinski_Curve&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Serpinski_Gasket&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;SquareSpikes&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Terdragon&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Tree1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Tree2&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Tree3&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Twig&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Two_Ys&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Weed1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Weed2&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Weed3&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">mpl_image_compare</span><span class="p">(</span><span class="n">baseline_dir</span><span class="o">=</span><span class="n">BASELINE_DIR</span><span class="p">,</span>
+                               <span class="n">tolerance</span><span class="o">=</span><span class="n">TOLERANCE</span><span class="p">,</span>
+                               <span class="n">remove_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                               <span class="n">savefig_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dpi&#39;</span><span class="p">:</span> <span class="mi">150</span><span class="p">})</span>
+<span class="k">def</span> <span class="nf">test_plot_lsys</span><span class="p">(</span><span class="n">fractal</span><span class="p">):</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">lsys</span><span class="o">.</span><span class="n">fractals</span><span class="o">.</span><span class="n">Fractal</span><span class="p">[</span><span class="n">fractal</span><span class="p">]</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">lsys</span><span class="o">.</span><span class="n">Lsys</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">unoise</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">depths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">depth</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">depths</span><span class="p">):</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">as_lc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">fractal</span><span class="p">)</span>
+    <span class="n">pyplot</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="test_plot_bezier_lsys"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_viz.test_plot_bezier_lsys">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="s1">&#39;fractal&#39;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;Dragon&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Terdragon&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Serpinski_Gasket&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Tree1&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;SquareSpikes&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Plant_f&#39;</span><span class="p">),</span>
+    <span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_plot_bezier_lsys</span><span class="p">(</span><span class="n">fractal</span><span class="p">):</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">lsys</span><span class="o">.</span><span class="n">fractals</span><span class="o">.</span><span class="n">Fractal</span><span class="p">[</span><span class="n">fractal</span><span class="p">]</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">lsys</span><span class="o">.</span><span class="n">Lsys</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">unoise</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">depths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">depth</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">depths</span><span class="p">):</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">plot_bezier</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">plot_bezier</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">as_lc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">fractal</span><span class="p">)</span>
+    <span class="n">pyplot</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fig</span></div>
+
+
+
+
+
+
+
+
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Austin Orr.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

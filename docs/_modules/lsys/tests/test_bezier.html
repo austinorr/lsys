@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lsys.tests.test_bezier &mdash; lsys 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="lsys 0.1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="lsys.tests" href="../tests.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> lsys
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">lsys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">lsys</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../tests.html">lsys.tests</a> &raquo;</li>
+        
+      <li>lsys.tests.test_bezier</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lsys.tests.test_bezier</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">lsys</span>
+<span class="kn">from</span> <span class="nn">lsys</span> <span class="k">import</span> <span class="n">bezier</span>
+
+
+<div class="viewcode-block" id="test_binomial"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_binomial">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;expected&#39;</span><span class="p">),</span>
+                         <span class="p">[</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">126</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_binomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="n">expected</span></div>
+
+
+<div class="viewcode-block" id="test_ctrl_pts"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_ctrl_pts">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s1">&#39;p0&#39;</span><span class="p">,</span> <span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;expected&#39;</span><span class="p">),</span>
+                         <span class="p">[</span>
+    <span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">],</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>   <span class="p">[</span><span class="o">.</span><span class="mi">25</span><span class="p">,</span>  <span class="o">.</span><span class="mi">25</span><span class="p">]),</span>
+    <span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span>   <span class="mi">1</span><span class="p">],</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span>   <span class="p">[</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span>   <span class="o">.</span><span class="mi">5</span><span class="p">]),</span>
+    <span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span>   <span class="mi">1</span><span class="p">],</span> <span class="o">.</span><span class="mi">333</span><span class="p">,</span> <span class="p">[</span><span class="o">.</span><span class="mi">333</span><span class="p">,</span> <span class="o">.</span><span class="mi">333</span><span class="p">]),</span>
+<span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_ctrl_pts</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">ctrl_pts</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+    <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_lsys_bezier_poly"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_lsys_bezier_poly">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;expected&#39;</span><span class="p">),</span>
+                         <span class="p">[</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">1.000000</span><span class="p">,</span> <span class="mf">1.000000</span><span class="p">,</span> <span class="mf">1.000000</span><span class="p">,</span> <span class="mf">1.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">0.750000</span><span class="p">,</span> <span class="mf">0.500000</span><span class="p">,</span> <span class="mf">0.250000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.250000</span><span class="p">,</span> <span class="mf">0.500000</span><span class="p">,</span> <span class="mf">0.750000</span><span class="p">,</span> <span class="mf">1.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">0.562500</span><span class="p">,</span> <span class="mf">0.250000</span><span class="p">,</span> <span class="mf">0.062500</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.375000</span><span class="p">,</span> <span class="mf">0.500000</span><span class="p">,</span> <span class="mf">0.375000</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.062500</span><span class="p">,</span> <span class="mf">0.250000</span><span class="p">,</span> <span class="mf">0.562500</span><span class="p">,</span> <span class="mf">1.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.000000</span><span class="p">,</span> <span class="mf">0.421875</span><span class="p">,</span> <span class="mf">0.125000</span><span class="p">,</span> <span class="mf">0.015625</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.421875</span><span class="p">,</span> <span class="mf">0.375000</span><span class="p">,</span> <span class="mf">0.140625</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.140625</span><span class="p">,</span> <span class="mf">0.375000</span><span class="p">,</span> <span class="mf">0.421875</span><span class="p">,</span> <span class="mf">0.000000</span><span class="p">,</span> <span class="p">]),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.000000</span><span class="p">,</span> <span class="mf">0.015625</span><span class="p">,</span> <span class="mf">0.125000</span><span class="p">,</span> <span class="mf">0.421875</span><span class="p">,</span> <span class="mf">1.000000</span><span class="p">,</span> <span class="p">]),</span>
+<span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_lsys_bezier_poly</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">.</span><span class="mi">25</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">75</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">poly</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_bezier"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_bezier">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s1">&#39;pts&#39;</span><span class="p">,</span> <span class="s1">&#39;segs&#39;</span><span class="p">,</span> <span class="s1">&#39;expected&#39;</span><span class="p">),</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="p">]),</span>
+        <span class="mi">5</span><span class="p">,</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span>  <span class="mf">0.32</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span>  <span class="mf">0.48</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span>  <span class="mf">0.48</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">1.6</span><span class="p">,</span>  <span class="mf">0.32</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">2.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]</span>
+        <span class="p">])</span>
+    <span class="p">),</span>
+    <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">]),</span>
+        <span class="mi">5</span><span class="p">,</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.496</span><span class="p">,</span>  <span class="mf">0.48</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.848</span><span class="p">,</span>  <span class="mf">0.72</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">1.152</span><span class="p">,</span>  <span class="mf">0.72</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">1.504</span><span class="p">,</span>  <span class="mf">0.48</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">2.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]</span>
+        <span class="p">])</span>
+    <span class="p">),</span>
+    <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">]),</span>
+        <span class="mi">5</span><span class="p">,</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.24</span><span class="p">,</span>  <span class="mf">0.32</span><span class="p">,</span>  <span class="mf">0.64</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.56</span><span class="p">,</span>  <span class="mf">0.48</span><span class="p">,</span>  <span class="mf">0.96</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.96</span><span class="p">,</span>  <span class="mf">0.48</span><span class="p">,</span>  <span class="mf">0.96</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">1.44</span><span class="p">,</span>  <span class="mf">0.32</span><span class="p">,</span>  <span class="mf">0.64</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">2.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]</span>
+        <span class="p">])</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_bezier</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">segs</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">bezier</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">segs</span><span class="p">)</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_bezier_xy"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_bezier_xy">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s1">&#39;keep&#39;</span><span class="p">,</span> <span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="s1">&#39;expected&#39;</span><span class="p">),</span> <span class="p">[</span>
+    <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="mf">0.</span><span class="p">,</span>
+            <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.68347576</span><span class="p">,</span>
+            <span class="mf">0.89173788</span><span class="p">,</span>
+            <span class="mf">1.10826212</span><span class="p">,</span>
+            <span class="mf">1.31652424</span><span class="p">,</span>
+            <span class="mf">1.5</span><span class="p">,</span>
+            <span class="mf">2.</span><span class="p">]),</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="mf">0.</span><span class="p">,</span>
+            <span class="mf">0.5</span><span class="p">,</span>
+            <span class="mf">0.63245961</span><span class="p">,</span>
+            <span class="mf">0.69868941</span><span class="p">,</span>
+            <span class="mf">0.69868941</span><span class="p">,</span>
+            <span class="mf">0.63245961</span><span class="p">,</span>
+            <span class="mf">0.5</span><span class="p">,</span>
+            <span class="mf">0.</span><span class="p">]))),</span>
+    <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="mf">0.5</span><span class="p">,</span>
+            <span class="mf">0.68347576</span><span class="p">,</span>
+            <span class="mf">0.89173788</span><span class="p">,</span>
+            <span class="mf">1.10826212</span><span class="p">,</span>
+            <span class="mf">1.31652424</span><span class="p">,</span>
+            <span class="mf">1.5</span>
+        <span class="p">]),</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="mf">0.5</span><span class="p">,</span>
+            <span class="mf">0.63245961</span><span class="p">,</span>
+            <span class="mf">0.69868941</span><span class="p">,</span>
+            <span class="mf">0.69868941</span><span class="p">,</span>
+            <span class="mf">0.63245961</span><span class="p">,</span>
+            <span class="mf">0.5</span><span class="p">]))</span>
+     <span class="p">),</span>
+    <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.676</span><span class="p">,</span>  <span class="mf">0.888</span><span class="p">,</span>  <span class="mf">1.112</span><span class="p">,</span>  <span class="mf">1.324</span><span class="p">,</span>  <span class="mf">1.5</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">]),</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.62</span><span class="p">,</span>  <span class="mf">0.68</span><span class="p">,</span>  <span class="mf">0.68</span><span class="p">,</span>  <span class="mf">0.62</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]))),</span>
+    <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.676</span><span class="p">,</span>  <span class="mf">0.888</span><span class="p">,</span>  <span class="mf">1.112</span><span class="p">,</span>  <span class="mf">1.324</span><span class="p">,</span>  <span class="mf">1.5</span><span class="p">]),</span>
+        <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.62</span><span class="p">,</span>  <span class="mf">0.68</span><span class="p">,</span>  <span class="mf">0.68</span><span class="p">,</span>  <span class="mf">0.62</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">]))</span>
+     <span class="p">),</span>
+
+<span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_bezier_xy</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">])</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">bezier_xy</span><span class="p">(</span><span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pts</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+                           <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">segs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">keep_ends</span><span class="o">=</span><span class="n">keep</span><span class="p">)</span>
+    <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_bezier_xy_curve"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_bezier_xy_curve">[docs]</a><span class="k">def</span> <span class="nf">test_bezier_xy_curve</span><span class="p">():</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">lsys</span><span class="o">.</span><span class="n">Lsys</span><span class="p">(</span><span class="o">**</span><span class="n">lsys</span><span class="o">.</span><span class="n">Fractal</span><span class="p">[</span><span class="s1">&#39;Dragon&#39;</span><span class="p">])</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">bezier_xy</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">segs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.03931847</span><span class="p">,</span>  <span class="mf">0.14651593</span><span class="p">,</span>  <span class="mf">0.30545542</span><span class="p">,</span>
+                        <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.69454458</span><span class="p">,</span>  <span class="mf">0.85348407</span><span class="p">,</span>  <span class="mf">0.96068153</span><span class="p">,</span>
+                        <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.03931847</span><span class="p">,</span>  <span class="mf">1.14651593</span><span class="p">,</span>  <span class="mf">1.30545542</span><span class="p">,</span>
+                        <span class="mf">1.5</span><span class="p">,</span>  <span class="mf">2.</span><span class="p">]),</span>
+           <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.69454458</span><span class="p">,</span>  <span class="mf">0.85348407</span><span class="p">,</span>  <span class="mf">0.96068153</span><span class="p">,</span>
+                        <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.96068153</span><span class="p">,</span>  <span class="mf">0.85348407</span><span class="p">,</span>  <span class="mf">0.69454458</span><span class="p">,</span>
+                        <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.5</span><span class="p">,</span>  <span class="mf">0.30545542</span><span class="p">,</span>  <span class="mf">0.14651593</span><span class="p">,</span>  <span class="mf">0.03931847</span><span class="p">,</span>
+                        <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">]))</span>
+
+    <span class="n">numpy</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-03</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_circular_weight_ref"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_circular_weight_ref">[docs]</a><span class="k">def</span> <span class="nf">test_circular_weight_ref</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;ensure that circular weight returns value similar to</span>
+<span class="sd">    ref:</span>
+<span class="sd">        http://spencermortensen.com/articles/bezier-circle/</span>
+<span class="sd">        0.551915024494</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e8</span>
+    <span class="n">rem</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">circular_weight</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.55191502</span>  <span class="c1"># 4494</span>
+
+    <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span></div>
+
+
+<div class="viewcode-block" id="test_circular_weight_equals_find_weight"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_circular_weight_equals_find_weight">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">test_circular_weight_equals_find_weight</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
+    <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e8</span>
+    <span class="n">cw</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">circular_weight</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+    <span class="n">fcw</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">find_circular_weight</span><span class="p">(</span><span class="n">angle</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">rem</span> <span class="o">=</span> <span class="n">cw</span> <span class="o">-</span> <span class="n">fcw</span>
+
+    <span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rem</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span></div>
+
+
+<div class="viewcode-block" id="test_find_circular_weight_raises"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_find_circular_weight_raises">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
+    <span class="p">(</span><span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;guess&#39;</span><span class="p">),</span>
+    <span class="nb">zip</span><span class="p">(</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+        <span class="p">[</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_find_circular_weight_raises</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">guess</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">bezier</span><span class="o">.</span><span class="n">find_circular_weight</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">guess</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_find_circular_weight_one_iter"><a class="viewcode-back" href="../../../lsys.tests.html#lsys.tests.test_bezier.test_find_circular_weight_one_iter">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">((</span><span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;guess&#39;</span><span class="p">,</span> <span class="s1">&#39;max_iters&#39;</span><span class="p">),</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="o">.</span><span class="mi">99</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_find_circular_weight_one_iter</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">max_iters</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">bezier</span><span class="o">.</span><span class="n">find_circular_weight</span><span class="p">(</span>
+        <span class="n">angle</span><span class="p">,</span> <span class="n">guess</span><span class="o">=</span><span class="n">guess</span><span class="p">,</span> <span class="n">max_iters</span><span class="o">=</span><span class="n">max_iters</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">res</span> <span class="o">==</span> <span class="n">guess</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Austin Orr.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
