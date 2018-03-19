@@ -36,7 +36,7 @@ before_install:
 # This should not need changing.
 install:
   - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION nomkl numpy matplotlib
-  - conda activate test
+  - source activate test
   - conda install --yes --channel=conda-forge ${TESTERS}
   - pip install pytest-mpl>=0.8
   - if [ ${COVERAGE} = true ]; then
