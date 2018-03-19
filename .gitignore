@@ -55,14 +55,7 @@ coverage.xml
 # Django stuff:
 *.log
 
-# Sphinx documentation
-docs/_build
-docs/_static
-docs/_templates
-docs/tutorial/*.rst
-docs/tutorial/*_files
-scratch
-scratch.*
+# IPython Notebook
 .ipynb_checkpoints
 
 # PyBuilder
