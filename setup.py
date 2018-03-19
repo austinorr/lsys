@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Usage: $pip install .
-
+import os
 from setuptools import setup, find_packages
 
 def get_pkg_info(info_file, info):
@@ -13,7 +13,7 @@ def get_pkg_info(info_file, info):
             val = line.split("=")[1].replace("'", "").replace('"', "").strip()
     return val
 
-with open(os.path.join('swmmnetwork', '__init__.py')) as init_file:
+with open(os.path.join('lsys', '__init__.py')) as init_file:
     author = get_pkg_info(init_file, 'author')
     email = get_pkg_info(init_file, 'email')
     version = get_pkg_info(init_file, 'version')
