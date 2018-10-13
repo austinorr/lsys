@@ -37,7 +37,7 @@ def plot(x, y, pad=5, square=False, ax=None, **kwargs):
     ax : matplotlib.axes.Axes
 
     """
-    if 'solid_capstype' not in kwargs:
+    if 'solid_capstyle' not in kwargs:
         kwargs['solid_capstyle']='round'
 
     fig, ax = validate.axes_object(ax)
@@ -80,6 +80,9 @@ def plot_line_collection(coords, pad=5, square=False, ax=None, **kwargs):
     if 'cmap' in kwargs:
         if 'array' not in kwargs:
             kwargs['array'] = numpy.linspace(0.0, 1.0, len(coords))
+
+    if 'capstyle' not in kwargs:
+        kwargs['capstyle']='round'
 
     fig, ax = validate.axes_object(ax)
     lines = LineCollection(coords, **kwargs)
