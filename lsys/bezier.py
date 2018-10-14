@@ -366,8 +366,7 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
         last_pt = None
         for i in rng:
             pt = temp[i:i + 3]
-            # unsure what this is doing here.
-            if i > 0 and not numpy.array_equal(pt[0], last_pt):
+            if i > 0 and not numpy.array_equal(pt[0], last_pt): # unsure what this is doing here.
                 continue
             c1 = ctrl_pts(pt[0], pt[1], weight)
             c2 = ctrl_pts(pt[2], pt[1], weight)
@@ -376,21 +375,10 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
             _ty.append(t[:, 1])
             last_pt = pt[2]
 
-        if keep_ends:
-
-            tx.append(
-                numpy.concatenate(
-                    (segx[:1], numpy.array(_tx).flatten(), segx[-1:])
-                )
-            )
-            ty.append(
-                numpy.concatenate(
-                    (segy[:1], numpy.array(_ty).flatten(), segy[-1:])
-                )
-            )
-        else:
-            tx.append(numpy.array(_tx).flatten())
-            ty.append(numpy.array(_ty).flatten())
+        tx.append(numpy.concatenate(
+            (segx[:1], numpy.array(_tx).flatten(), segx[-1:])))
+        ty.append(numpy.concatenate(
+            (segy[:1], numpy.array(_ty).flatten(), segy[-1:])))
 
         if insert_nan:
             for t in [tx, ty]:
@@ -399,9 +387,9 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
     tx = numpy.concatenate(tx)
     ty = numpy.concatenate(ty)
 
-    # if not keep_ends:
+    if not keep_ends:
 
-    #     tx = tx[1:-1]
-    #     ty = ty[1:-1]
+        tx = tx[1:-1]
+        ty = ty[1:-1]
 
     return tx, ty
