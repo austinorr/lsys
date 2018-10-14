@@ -1,4 +1,6 @@
 import numpy
+import matplotlib
+matplotlib.use('agg')
 from matplotlib import pyplot
 
 import pytest
@@ -136,6 +138,10 @@ def test_plot_lsys(fractal):
         ('SquareSpikes'),
         ('Plant_f'),
     ])
+@pytest.mark.mpl_image_compare(baseline_dir=BASELINE_DIR,
+                               tolerance=TOLERANCE,
+                               remove_text=False,
+                               savefig_kwargs={'dpi': 150})
 def test_plot_bezier_lsys(fractal):
     kwargs = lsys.fractals.Fractal[fractal]
     f = lsys.Lsys(**kwargs)
