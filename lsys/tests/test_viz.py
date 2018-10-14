@@ -1,4 +1,6 @@
 import numpy
+import matplotlib
+matplotlib.use('agg')
 from matplotlib import pyplot
 
 import pytest
@@ -136,6 +138,10 @@ def test_plot_lsys(fractal):
         ('SquareSpikes'),
         ('Plant_f'),
     ])
+@pytest.mark.mpl_image_compare(baseline_dir=BASELINE_DIR,
+                               tolerance=TOLERANCE,
+                               remove_text=False,
+                               savefig_kwargs={'dpi': 150})
 def test_plot_bezier_lsys(fractal):
     kwargs = lsys.fractals.Fractal[fractal]
     f = lsys.Lsys(**kwargs)
@@ -146,18 +152,10 @@ def test_plot_bezier_lsys(fractal):
     for ax, depth in zip(axes, depths):
         f.depth = depth
         ax = f.plot_bezier(ax=ax, square=True, color='k', alpha=0.5)
-        ax = f.plot_bezier(ax=ax, as_lc=True, color='k', alpha=0.5)
+        ax = f.plot_bezier(ax=ax, as_lc=True, color='k',
+                           alpha=0.5, capstyle='butt')
         ax.set_xticks([])
         ax.set_yticks([])
         ax.set_title(fractal)
     pyplot.close('all')
     return fig
-
-
-
-
-
-
-
-
-
