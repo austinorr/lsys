@@ -2,7 +2,6 @@ from __future__ import division
 
 import numpy
 import matplotlib
-from matplotlib import pyplot
 from matplotlib.collections import LineCollection
 
 from . import validate
