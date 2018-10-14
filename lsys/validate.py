@@ -1,6 +1,5 @@
-from matplotlib import pyplot
-
-import numpy as np
+import matplotlib
+import numpy
 
 
 def axes_object(ax):
@@ -10,9 +9,10 @@ def axes_object(ax):
     """
 
     if ax is None:
+        from matplotlib import pyplot
         fig, ax = pyplot.subplots()
-    
-    elif isinstance(ax, pyplot.Axes):
+
+    elif isinstance(ax, matplotlib.axes.Axes):
         fig = ax.figure
     else:
         msg = "`ax` must be a matplotlib Axes instance or None"
@@ -22,7 +22,7 @@ def axes_object(ax):
 
 
 def is_np(listlike):
-    if not isinstance(listlike, np.ndarray) or listlike.dtype != np.float:
-        listlike = np.array(listlike, dtype=np.float)
+    if not isinstance(listlike, numpy.ndarray) or listlike.dtype != numpy.float:
+        listlike = numpy.array(listlike, dtype=numpy.float)
 
     return listlike
