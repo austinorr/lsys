@@ -10,7 +10,7 @@ import lsys
 from lsys import viz
 
 BASELINE_DIR = "baseline_images/test_viz"
-TOLERANCE = 20
+TOLERANCE = 23
 
 plotData = numpy.array(
     [
