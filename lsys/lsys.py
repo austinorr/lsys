@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import warnings
 import numpy
 
@@ -39,12 +37,12 @@ class Lsys(object):
         step=1,
         ds=1,
         unoise=0,
-        forward='F',
+        forward="F",
         bar="|",
-        right='+',
-        left='-',
-        goto='G',
-        ignore='',
+        right="+",
+        left="-",
+        goto="G",
+        ignore="",
         memory_check=True,
     ):
         """
@@ -78,7 +76,7 @@ class Lsys(object):
         self._goto = goto.upper()
         self._ignore = ignore.upper()
         if not isinstance(memory_check, bool):
-            raise ValueError('`memory_check` must be `True` or `False`.')
+            raise ValueError("`memory_check` must be `True` or `False`.")
         self._memory_check = memory_check
 
         # derived properties
@@ -265,17 +263,20 @@ class Lsys(object):
     @memory_check.setter
     def memory_check(self, value):
         if not isinstance(value, bool):
-            raise ValueError('Must set `memory_check` to `True` or `False`.')
+            raise ValueError("Must set `memory_check` to `True` or `False`.")
         self._memory_check = value
 
     # derived properties
     @property
     def string(self):
         if not self._string or self._string_stale:
-            self._string = self.expand(self.axiom, self.rule,
-                                       self.depth, self.bar,
-                                       self.memory_check,
-                                       )
+            self._string = self.expand(
+                self.axiom,
+                self.rule,
+                self.depth,
+                self.bar,
+                self.memory_check,
+            )
             self._string_stale = False
         return self._string
 
@@ -323,21 +324,28 @@ class Lsys(object):
         for k, v in self.rule.items():
             vocab += k
             vocab += v
-        vocab += "".join([self.axiom, self.forward, self.goto,
-                          self.right, self.left, self.bar, self.ignore])
+        vocab += "".join(
+            [
+                self.axiom,
+                self.forward,
+                self.goto,
+                self.right,
+                self.left,
+                self.bar,
+                self.ignore,
+            ]
+        )
         vocab = set(vocab.replace(" ", ""))
 
         if "." in vocab:
-            raise Exception(
-                'the "." charcter is reserved and cannot be in `vocab`.')
+            raise Exception('the "." charcter is reserved and cannot be in `vocab`.')
 
         return vocab
 
     def _build_commands(self):
         """Compile all chars used in the vocabulary of the fractal"""
         cmd = ""
-        cmd += "".join([self.forward, self.goto,
-                        self.right, self.left, self.bar])
+        cmd += "".join([self.forward, self.goto, self.right, self.left, self.bar])
 
         return set(cmd.replace(" ", ""))
 
@@ -383,8 +391,9 @@ class Lsys(object):
                     if s in rule:
                         rule = rule.replace(s, "=")
             else:
-                raise ValueError('Invalid rule syntax, use {} '
-                                 'to assign rules.'.format(seps))
+                raise ValueError(
+                    "Invalid rule syntax, use {} " "to assign rules.".format(seps)
+                )
             for d in divs:
                 if d in rule:
                     rule = rule.replace(d, ",")
@@ -398,7 +407,7 @@ class Lsys(object):
             return clean_rule
 
         else:
-            raise ValueError('`rule` must be string or mapping')
+            raise ValueError("`rule` must be string or mapping")
 
     @staticmethod
     def expand(axiom, rule, depth, bar="|", memory_check=True):
@@ -433,7 +442,7 @@ class Lsys(object):
             if i == 0:
                 output = axiom
             else:
-                output = ''
+                output = ""
                 for c in axiom:
                     if c in rule:
                         output += rule[c]
@@ -441,21 +450,21 @@ class Lsys(object):
                         output += c
             # axiom = output.replace(bar, str(i + 1) + '.')
             # this broke tests. check CBN to see if the ds values are given.
-            axiom = output.replace(bar, str(i) + '.')
+            axiom = output.replace(bar, str(i) + ".")
             i += 1
         return axiom.replace(".", bar)
 
     def _compute_bezier(self, bezier_weight=None, segs=100, keep_ends=True):
-        """compute new bezier curves
-        """
+        """compute new bezier curves"""
 
-        self._bezier_x, self._bezier_y = bezier.bezier_xy(self.x,
-                                                          self.y,
-                                                          angle=self.da,
-                                                          weight=bezier_weight,
-                                                          segs=segs,
-                                                          keep_ends=keep_ends,
-                                                          )
+        self._bezier_x, self._bezier_y = bezier.bezier_xy(
+            self.x,
+            self.y,
+            angle=self.da,
+            weight=bezier_weight,
+            segs=segs,
+            keep_ends=keep_ends,
+        )
         self._bezier_coords = algo.xy_to_coords(self._bezier_x, self._bezier_y)
 
         return self._bezier_x, self._bezier_y
@@ -521,8 +530,7 @@ class Lsys(object):
                     sx = x + numpy.cos(a + algo.add_noise(unoise)) * s
 
                     if c == goto:
-                        x_y.append(([numpy.nan, numpy.nan],
-                                    [numpy.nan, numpy.nan]))
+                        x_y.append(([numpy.nan, numpy.nan], [numpy.nan, numpy.nan]))
                         depths.append(pres_depth)
                         pass
 
@@ -546,16 +554,16 @@ class Lsys(object):
                     else:
                         a += da * num * (algo.add_noise(unoise) + 1)
 
-                elif c == '[':
+                elif c == "[":
 
                     stack.append(
-                        (x, y, a + (algo.add_noise(unoise) * numpy.radians(5))))
+                        (x, y, a + (algo.add_noise(unoise) * numpy.radians(5)))
+                    )
 
-                elif c == ']':
+                elif c == "]":
                     x, y, a = stack.pop()
 
-                    x_y.append(([numpy.nan, numpy.nan],
-                                [numpy.nan, numpy.nan]))
+                    x_y.append(([numpy.nan, numpy.nan], [numpy.nan, numpy.nan]))
 
                     depths.append(pres_depth)
 
@@ -573,29 +581,36 @@ class Lsys(object):
 
         return numpy.array(x_y), numpy.array(depths)
 
-    def plot_bezier(self, bezier_weight=None, segs=100, as_lc=False,
-                    pad=5, square=True, keep_ends=True, ax=None, **kwargs):
+    def plot_bezier(
+        self,
+        bezier_weight=None,
+        segs=100,
+        as_lc=False,
+        pad=5,
+        square=True,
+        keep_ends=True,
+        ax=None,
+        **kwargs
+    ):
 
         _, _ = self._compute_bezier(
-            bezier_weight=bezier_weight, segs=segs, keep_ends=keep_ends)
+            bezier_weight=bezier_weight, segs=segs, keep_ends=keep_ends
+        )
 
         if as_lc:
 
-            return viz.plot_line_collection(self._bezier_coords,
-                                            pad=pad,
-                                            square=square,
-                                            ax=ax,
-                                            **kwargs)
+            return viz.plot_line_collection(
+                self._bezier_coords, pad=pad, square=square, ax=ax, **kwargs
+            )
 
-        return viz.plot(self._bezier_x, self._bezier_y,
-                        pad=pad, square=square, ax=ax, **kwargs)
+        return viz.plot(
+            self._bezier_x, self._bezier_y, pad=pad, square=square, ax=ax, **kwargs
+        )
 
     def plot(self, as_lc=False, pad=5, square=True, ax=None, **kwargs):
         if as_lc:
-            return viz.plot_line_collection(self.coords,
-                                            pad=pad,
-                                            square=square,
-                                            ax=ax,
-                                            **kwargs)
+            return viz.plot_line_collection(
+                self.coords, pad=pad, square=square, ax=ax, **kwargs
+            )
 
         return viz.plot(self.x, self.y, pad=pad, square=square, ax=ax, **kwargs)

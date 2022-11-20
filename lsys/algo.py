@@ -1,12 +1,10 @@
-
 import numpy
 
 from . import validate
 
 
-def add_noise(num, scale=.5):
-    """produces a random value distributed normally between +- num
-    """
+def add_noise(num, scale=0.5):
+    """produces a random value distributed normally between +- num"""
     if num:
         return num * numpy.random.normal(0.0, scale)
     return 0
@@ -32,8 +30,9 @@ def midpoints(np_array):
 
     np_array = validate.is_np(np_array)
 
-    result = (np_array[~numpy.isnan(np_array)][i:] +
-              np_array[~numpy.isnan(np_array)][:-i]) / 2
+    result = (
+        np_array[~numpy.isnan(np_array)][i:] + np_array[~numpy.isnan(np_array)][:-i]
+    ) / 2
 
     return result
 

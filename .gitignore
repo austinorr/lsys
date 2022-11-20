@@ -1,5 +1,5 @@
-_no_git_/
 _no_git_*
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

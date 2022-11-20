@@ -60,14 +60,15 @@ def binomial(n, k):
     reference: http://pomax.github.io/bezierinfo/
     """
 
-    tri = [[1],              # n=0
-           [1, 1],            # n=1
-           [1, 2, 1],          # n=2
-           [1, 3, 3, 1],        # n=3
-           [1, 4, 6, 4, 1],      # n=4
-           [1, 5, 10, 10, 5, 1],    # n=5
-           [1, 6, 15, 20, 15, 6, 1],  # n=6
-           ]
+    tri = [
+        [1],  # n=0
+        [1, 1],  # n=1
+        [1, 2, 1],  # n=2
+        [1, 3, 3, 1],  # n=3
+        [1, 4, 6, 4, 1],  # n=4
+        [1, 5, 10, 10, 5, 1],  # n=5
+        [1, 6, 15, 20, 15, 6, 1],  # n=6
+    ]
 
     while n >= len(tri):
         s = len(tri)
@@ -105,7 +106,7 @@ def poly(n, k):
 
     def _poly(t):
         """Calculates value at t between bezier points"""
-        return coeff * (1 - t)**(n - k) * t**(k)
+        return coeff * (1 - t) ** (n - k) * t ** (k)
 
     return _poly
 
@@ -178,26 +179,28 @@ def circular_weight(angle):
         approximate a circular curve.
 
     """
-    z = numpy.array([
-        -2.45143082907626980583458614241573e-24,
-        1.58856196152315352138612607918623e-21,
-        -5.03264989277462933391916020538014e-19,
-        8.57954915199159887348249578203777e-17,
-        -1.09982713519619074150585319501519e-14,
-        6.42175701661701683377126465867012e-13,
-        -1.95012445981222027957307425487916e-10,
-        6.98338125134285339870680633234242e-10,
-        -1.27018636324842636571531492850617e-05,
-        5.58069196465371404519196542326487e-08,
-        6.66666581437823202449521886592265e-01
-    ])
+    z = numpy.array(
+        [
+            -2.45143082907626980583458614241573e-24,
+            1.58856196152315352138612607918623e-21,
+            -5.03264989277462933391916020538014e-19,
+            8.57954915199159887348249578203777e-17,
+            -1.09982713519619074150585319501519e-14,
+            6.42175701661701683377126465867012e-13,
+            -1.95012445981222027957307425487916e-10,
+            6.98338125134285339870680633234242e-10,
+            -1.27018636324842636571531492850617e-05,
+            5.58069196465371404519196542326487e-08,
+            6.66666581437823202449521886592265e-01,
+        ]
+    )
 
     p = numpy.poly1d(z)
 
     return p(angle)
 
 
-def find_circular_weight(angle,  guess=0.5, tol=1e-9, max_iters=50, r=10, segs=100):
+def find_circular_weight(angle, guess=0.5, tol=1e-9, max_iters=50, r=10, segs=100):
     """
     Finds weight factor for bezier control points such that the `angle`
     QRS will be filled with cubic bezier curve approximating a circle
@@ -252,10 +255,10 @@ def find_circular_weight(angle,  guess=0.5, tol=1e-9, max_iters=50, r=10, segs=1
     """
 
     if not 0 < angle < 180:
-        raise ValueError('`angle` must be between 0 and 180, exclusive')
+        raise ValueError("`angle` must be between 0 and 180, exclusive")
 
     if not 0 < guess < 1:
-        raise ValueError('`guess` must be between 0 and 1, exclusive')
+        raise ValueError("`guess` must be between 0 and 1, exclusive")
 
     deg = (180 - angle) / 2
     theta = numpy.deg2rad(deg)  # half of the interior angle formed by QRS
@@ -292,12 +295,12 @@ def gen_new_guess(guess, pt0, pt2, ptm, kc, r, a, b, segs):
         # build cubic bezier curve with `segs` segments
         t = bezier([pt0, pc1, pc2, pt2], segs)
         # determine radial distance from each bezier point to the circle center
-        radial_dist = numpy.sqrt(numpy.sum((t - [0, kc])**2, axis=1))
+        radial_dist = numpy.sqrt(numpy.sum((t - [0, kc]) ** 2, axis=1))
         # radial distance from circle to bezier curve
         error_np = radial_dist - r
         tmax = numpy.abs(error_np.max())
         tmin = numpy.abs(error_np.min())
-        error = (tmax - tmin)  # minimize the range with bisection search
+        error = tmax - tmin  # minimize the range with bisection search
 
         yield guess, error_np, error, a, b
 
@@ -365,7 +368,7 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
         _ty = []
         last_pt = None
         for i in rng:
-            pt = temp[i:i + 3]
+            pt = temp[i : i + 3]
             # unsure what this is doing here.
             if i > 0 and not numpy.array_equal(pt[0], last_pt):
                 continue
@@ -379,14 +382,10 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
         if keep_ends:
 
             tx.append(
-                numpy.concatenate(
-                    (segx[:1], numpy.array(_tx).flatten(), segx[-1:])
-                )
+                numpy.concatenate((segx[:1], numpy.array(_tx).flatten(), segx[-1:]))
             )
             ty.append(
-                numpy.concatenate(
-                    (segy[:1], numpy.array(_ty).flatten(), segy[-1:])
-                )
+                numpy.concatenate((segy[:1], numpy.array(_ty).flatten(), segy[-1:]))
             )
         else:
             tx.append(numpy.array(_tx).flatten())
