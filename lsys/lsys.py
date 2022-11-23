@@ -5,6 +5,8 @@ from . import viz
 from . import bezier
 from . import algo
 
+MAX_STRING_SIZE = 5e6
+
 
 class Lsys(object):
     """
@@ -75,7 +77,7 @@ class Lsys(object):
         self._right = right.upper()
         self._goto = goto.upper()
         self._ignore = ignore.upper()
-        if not isinstance(memory_check, bool):
+        if not isinstance(memory_check, bool):  # pragma: no cover
             raise ValueError("`memory_check` must be `True` or `False`.")
         self._memory_check = memory_check
 
@@ -262,7 +264,7 @@ class Lsys(object):
 
     @memory_check.setter
     def memory_check(self, value):
-        if not isinstance(value, bool):
+        if not isinstance(value, bool):  # pragma: no cover
             raise ValueError("Must set `memory_check` to `True` or `False`.")
         self._memory_check = value
 
@@ -296,6 +298,7 @@ class Lsys(object):
     def depths(self):
         if self._coords is None or self._coord_stale:
             self._coords, self._depths = self.compute_coords()
+            self._x, self._y = None, None
             self._coord_stale = False
         return self._depths
 
@@ -303,6 +306,7 @@ class Lsys(object):
     def coords(self):
         if self._coords is None or self._coord_stale:
             self._coords, self._depths = self.compute_coords()
+            self._x, self._y = None, None
             self._coord_stale = False
         return self._coords
 
@@ -437,7 +441,7 @@ class Lsys(object):
 
         i = 0
         while i <= depth:
-            if memory_check and len(axiom) > 5e6:
+            if memory_check and len(axiom) > MAX_STRING_SIZE:
                 raise MemoryError("Maximum `depth` is: {}".format(i))
             if i == 0:
                 output = axiom
@@ -454,8 +458,13 @@ class Lsys(object):
             i += 1
         return axiom.replace(".", bar)
 
-    def _compute_bezier(self, bezier_weight=None, segs=100, keep_ends=True):
+    def _compute_bezier(self, bezier_weight=None, segs=None, keep_ends=None):
         """compute new bezier curves"""
+
+        if segs is None:
+            segs = 50
+        if keep_ends is None:
+            keep_ends = True
 
         self._bezier_x, self._bezier_y = bezier.bezier_xy(
             self.x,
@@ -584,33 +593,58 @@ class Lsys(object):
     def plot_bezier(
         self,
         bezier_weight=None,
-        segs=100,
-        as_lc=False,
+        segs=None,
+        as_lc=None,
         pad=5,
-        square=True,
+        square=None,
         keep_ends=True,
         ax=None,
         **kwargs
     ):
 
-        _, _ = self._compute_bezier(
-            bezier_weight=bezier_weight, segs=segs, keep_ends=keep_ends
-        )
+        if bezier_weight is None:
+            bezier_weight = bezier.circular_weight(angle=self.da)
 
-        if as_lc:
+        if segs is None:
+            # fastest renderer is the mpl path collection implementation. Try this first if the
+            # user hasn't indicated the number of segments in `segs`
+            paths = viz.construct_bezier_path_collection(
+                self.coords, weight=bezier_weight, keep_ends=keep_ends, **kwargs
+            )
+            axes = viz.plot_collection(paths, ax=ax)
 
-            return viz.plot_line_collection(
-                self._bezier_coords, pad=pad, square=square, ax=ax, **kwargs
+        else:
+            # if the user has asked for `segs`, then compute the bezier using
+            # the expensive algorithm.
+            _, _ = self._compute_bezier(
+                bezier_weight=bezier_weight, segs=segs, keep_ends=keep_ends
             )
 
-        return viz.plot(
-            self._bezier_x, self._bezier_y, pad=pad, square=square, ax=ax, **kwargs
-        )
+            if as_lc:
 
-    def plot(self, as_lc=False, pad=5, square=True, ax=None, **kwargs):
+                # if user wishes to render as lc use this route.
+                lc = viz.construct_line_collection(self._bezier_coords, **kwargs)
+                axes = viz.plot_collection(lc, ax=ax)
+            else:
+                # if not, plot bezier
+                axes = viz.plot(self._bezier_x, self._bezier_y, ax=ax, **kwargs)
+
+        if (ax is None) or square:
+            axes = viz.pretty_format_ax(
+                axes, coords=self.coords, pad=pad, square=square
+            )
+        return axes
+
+    def plot(self, as_lc=False, pad=5, square=None, ax=None, **kwargs):
         if as_lc:
-            return viz.plot_line_collection(
-                self.coords, pad=pad, square=square, ax=ax, **kwargs
+            lc = viz.construct_line_collection(self.coords, **kwargs)
+            axes = viz.plot_collection(lc, ax=ax)
+        else:
+            axes = viz.plot(self.x, self.y, ax=ax, **kwargs)
+
+        if ax is None or square:
+            axes = viz.pretty_format_ax(
+                axes, coords=self.coords, pad=pad, square=square
             )
 
-        return viz.plot(self.x, self.y, pad=pad, square=square, ax=ax, **kwargs)
+        return axes

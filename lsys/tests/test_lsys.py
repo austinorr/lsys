@@ -12,8 +12,7 @@ Tests for `lsys` module.
 import pytest
 
 
-import lsys
-
+from .. import lsys, fractals
 
 result_at_depth_2 = {
     "Bush1": "FF+[+F-F-F]-[-F+F+F]FF+[+F-F-F]-[-F+F+F]+[+FF+[+F-F-F]-[-F+F+"
@@ -137,7 +136,7 @@ def test_expand(axiom, rule, depth, expected):
 
 def test_expand_fractal_dict():
 
-    fractal_dict = lsys.fractals.Fractal
+    fractal_dict = fractals.Fractal
 
     for n in [
         "Dragon",
@@ -172,17 +171,28 @@ def test_expand_fractal_dict():
 )
 def test_raise_ValueError_clean_rule(rule, expected):
     with pytest.raises(ValueError) as e:
-        rule_result = lsys.Lsys.clean_rule(rule)
+        _ = lsys.Lsys.clean_rule(rule)
 
 
-def test_raise_MemoryError_process():
-    dragon = lsys.fractals.Fractal["Dragon"]
+def test_raise_MemoryError_process(monkeypatch):
+
+    monkeypatch.setattr(lsys, "MAX_STRING_SIZE", 8)
+    dragon = fractals.Fractal["Dragon"]
     axiom = dragon["axiom"]
     rule = lsys.Lsys.clean_rule(dragon["rule"])
-    depth = 22
-
+    depth = 3
     with pytest.raises(MemoryError) as e:
-        string = lsys.Lsys.expand(axiom, rule, depth)
+        _ = lsys.Lsys.expand(axiom, rule, depth)
+
+
+def test_do_not_raise_MemoryError_process(monkeypatch):
+    monkeypatch.setattr(lsys, "MAX_STRING_SIZE", 8)
+    dragon = fractals.Fractal["Dragon"]
+    axiom = dragon["axiom"]
+    rule = lsys.Lsys.clean_rule(dragon["rule"])
+    depth = 3
+    string = lsys.Lsys.expand(axiom, rule, depth, memory_check=False)
+    assert len(string) > 8
 
 
 def test_Lsys_setters():
@@ -227,5 +237,6 @@ def test_Lsys_setters():
     ]
 
     for p in props:
+        d = lsys.Lsys(**dic)
         getattr(d, p)
         assert hasattr(d, p)

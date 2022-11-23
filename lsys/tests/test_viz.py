@@ -9,8 +9,8 @@ import pytest
 import lsys
 from lsys import viz
 
-BASELINE_DIR = "baseline_images/test_viz"
-TOLERANCE = 23
+BASELINE_DIR = "baseline_images"
+TOLERANCE = 15
 
 plotData = numpy.array(
     [
@@ -71,12 +71,9 @@ def test_square_aspect2():
     y = plotData
     x = numpy.random.uniform(-1, 1, size=len(y)) * 5
 
-    x0, x1 = numpy.min(x), numpy.max(x)
-    y0, y1 = numpy.min(y), numpy.max(y)
-    xlim, ylim = viz.square_aspect([x0, x1], [y0, y1])
-
     fig, ax = pyplot.subplots(figsize=(4, 4))
-    _ = viz.plot(x, y, ax=ax, color="b", marker="o", linestyle="", square=True)
+    _ = viz.plot(x, y, ax=ax, color="b", marker="o", linestyle="")
+    viz.pretty_format_ax(ax=ax, x=x, y=y)
 
     return fig
 
@@ -88,6 +85,7 @@ def test_square_aspect2():
         ["red", "green", "blue", "blue"],
         ["red", "green", 0.33, "green", "blue", 0.66, "blue"],
         ["r", "g", "b", "b"],
+        ["red", "green"],
     ],
 )
 @pytest.mark.mpl_image_compare(
@@ -143,7 +141,8 @@ def test_make_colormap_plot(seq):
 @pytest.mark.mpl_image_compare(
     baseline_dir=BASELINE_DIR,
     tolerance=TOLERANCE,
-    remove_text=False,
+    hash_library=f"{BASELINE_DIR}/image_hashes.json",
+    remove_text=True,
     savefig_kwargs={"dpi": 150},
 )
 def test_plot_lsys(fractal):
@@ -154,10 +153,8 @@ def test_plot_lsys(fractal):
     depths = [0, 1, 2, 4]
     for ax, depth in zip(axes.flatten(), depths):
         f.depth = depth
-        ax = f.plot(ax=ax, square=True, color="k", alpha=0.5)
-        ax = f.plot(ax=ax, as_lc=True, color="k", alpha=0.5)
-        ax.set_xticks([])
-        ax.set_yticks([])
+        ax = f.plot(ax=ax, color="k", alpha=0.5, square=True)
+        ax = f.plot(ax=ax, as_lc=True, color="k", alpha=0.5, square=True)
         ax.set_title(fractal)
     pyplot.close("all")
     return fig
@@ -177,7 +174,8 @@ def test_plot_lsys(fractal):
 @pytest.mark.mpl_image_compare(
     baseline_dir=BASELINE_DIR,
     tolerance=TOLERANCE,
-    remove_text=False,
+    hash_library=f"{BASELINE_DIR}/image_hashes.json",
+    remove_text=True,
     savefig_kwargs={"dpi": 150},
 )
 def test_plot_bezier_lsys(fractal):
@@ -188,10 +186,17 @@ def test_plot_bezier_lsys(fractal):
     depths = [0, 1, 2, 4]
     for ax, depth in zip(axes.flatten(), depths):
         f.depth = depth
-        ax = f.plot_bezier(ax=ax, square=True, color="k", alpha=0.5)
-        ax = f.plot_bezier(ax=ax, as_lc=True, color="k", alpha=0.5, capstyle="butt")
-        ax.set_xticks([])
-        ax.set_yticks([])
+        ax = f.plot_bezier(ax=ax, color="k", alpha=0.33, square=True)
+        ax = f.plot_bezier(ax=ax, as_lc=True, color="k", alpha=0.33, square=True)
+        ax = f.plot_bezier(
+            ax=ax,
+            as_lc=True,
+            segs=10,
+            color="k",
+            alpha=0.33,
+            square=True,
+        )
+
         ax.set_title(fractal)
     pyplot.close("all")
     return fig

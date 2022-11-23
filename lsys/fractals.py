@@ -253,8 +253,3 @@ Fractal = dict(
 #        "ds" : 0.5,
 #        "depth" : 3
 #        }
-
-# f.draw(start = (-100,-200))
-
-# fractals = [weed3,Tree1,Tree2,dragon,Hilbert,QuadKochIsland,SquareSpikes,
-#     hexdragon,Plant_a,Plant_b,Plant_c,Plant_d,Plant_e,Plant_f]

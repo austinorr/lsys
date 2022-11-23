@@ -1,5 +1,5 @@
-from .lsys import *
-from .fractals import *
+from .lsys import Lsys
+from .fractals import Fractal
 
 __author__ = "Austin Orr"
 __email__ = "austinmartinorr@gmail.com"

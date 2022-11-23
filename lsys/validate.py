@@ -1,4 +1,4 @@
-import matplotlib
+from matplotlib.axes import Axes
 import numpy
 
 
@@ -13,7 +13,7 @@ def axes_object(ax):
 
         fig, ax = pyplot.subplots()
 
-    elif isinstance(ax, matplotlib.axes.Axes):
+    elif isinstance(ax, Axes):
         fig = ax.figure
     else:
         msg = "`ax` must be a matplotlib Axes instance or None"

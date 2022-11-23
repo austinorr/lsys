@@ -201,8 +201,7 @@ def circular_weight(angle):
 
 
 def find_circular_weight(angle, guess=0.5, tol=1e-9, max_iters=50, r=10, segs=100):
-    """
-    Finds weight factor for bezier control points such that the `angle`
+    r"""Finds weight factor for bezier control points such that the `angle`
     QRS will be filled with cubic bezier curve approximating a circle
     that is tangent at the points Q and S.
 
@@ -284,7 +283,7 @@ def find_circular_weight(angle, guess=0.5, tol=1e-9, max_iters=50, r=10, segs=10
         if -tol < error < tol:
             return guess, error_np, error, i
 
-    return guess, error_np, error, i
+    return guess, error_np, error, i  # type: ignore
 
 
 def gen_new_guess(guess, pt0, pt2, ptm, kc, r, a, b, segs):
@@ -358,11 +357,7 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
     for segx, segy in zip(_x, _y):
 
         xmid, ymid = algo.midpoints(segx), algo.midpoints(segy)
-        # xmid = numpy.dstack((xmid, segx[1:])).flatten()[:-1]
-        # ymid = numpy.dstack((ymid, segy[1:])).flatten()[:-1]
-
         temp = numpy.vstack((xmid, ymid)).T
-
         rng = numpy.arange(0, len(temp) - 1, 2)
         _tx = []
         _ty = []
@@ -370,7 +365,7 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
         for i in rng:
             pt = temp[i : i + 3]
             # unsure what this is doing here.
-            if i > 0 and not numpy.array_equal(pt[0], last_pt):
+            if i > 0 and not numpy.array_equal(pt[0], last_pt):  # type: ignore # pragma: no cover
                 continue
             c1 = ctrl_pts(pt[0], pt[1], weight)
             c2 = ctrl_pts(pt[2], pt[1], weight)
@@ -379,17 +374,15 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
             _ty.append(t[:, 1])
             last_pt = pt[2]
 
-        if keep_ends:
+        flat_tx = numpy.array(_tx).flatten()
+        flat_ty = numpy.array(_ty).flatten()
 
-            tx.append(
-                numpy.concatenate((segx[:1], numpy.array(_tx).flatten(), segx[-1:]))
-            )
-            ty.append(
-                numpy.concatenate((segy[:1], numpy.array(_ty).flatten(), segy[-1:]))
-            )
-        else:
-            tx.append(numpy.array(_tx).flatten())
-            ty.append(numpy.array(_ty).flatten())
+        if keep_ends:
+            flat_tx = numpy.concatenate((segx[:1], flat_tx, segx[-1:]))
+            flat_ty = numpy.concatenate((segy[:1], flat_ty, segy[-1:]))
+
+        tx.append(flat_tx)
+        ty.append(flat_ty)
 
         if insert_nan:
             for t in [tx, ty]:
@@ -397,10 +390,5 @@ def bezier_xy(x, y, weight=None, angle=90, segs=100, keep_ends=True):
 
     tx = numpy.concatenate(tx)
     ty = numpy.concatenate(ty)
-
-    # if not keep_ends:
-
-    #     tx = tx[1:-1]
-    #     ty = ty[1:-1]
 
     return tx, ty

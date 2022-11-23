@@ -1,16 +1,17 @@
-from __future__ import division
-
 import numpy
 import matplotlib
-from matplotlib.collections import LineCollection
+from matplotlib.collections import LineCollection, PathCollection
+from matplotlib.path import Path
 
-from . import validate
 from . import algo
+from . import bezier
+from . import validate
 
 
-def plot(x, y, pad=5, square=False, ax=None, **kwargs):
-    """Plots 'x' vs 'y' and optionally computes the limits
-    of the axes based on the input data
+def plot(x, y, ax=None, **kwargs):
+    """Plots 'x' vs 'y' using matplotlib. This is a convenience wrapper that
+    creates the axes if it doesn't exist, and sets some nice rendering defaults
+    for plotting l-systems.
 
     Parameters
     ----------
@@ -18,13 +19,6 @@ def plot(x, y, pad=5, square=False, ax=None, **kwargs):
         1D numpy array of points
     y : numpy.array
         1D numpy array of points
-    pad : float or int, optional (default = 5)
-        the percent spacing between plot data and axes lines. This can be used
-        to zoom the plot. This is only applied if 'square' is 'True'
-        #TODO: figure out how to make this also pan the plot.
-    square : bool, optional (default = False)
-        whether to make the output plot a square with equal aspect
-        ratios for the axes.
     ax : matplotlib.axes.Axes, optional (default = None)
         the axes artist for plotting. If `None` is given, a new figure
         will be created.
@@ -36,61 +30,142 @@ def plot(x, y, pad=5, square=False, ax=None, **kwargs):
     ax : matplotlib.axes.Axes
 
     """
-    if "solid_capstyle" not in kwargs:
+    if "solid_capstyle" not in kwargs:  # pragma: no cover
         kwargs["solid_capstyle"] = "round"
 
-    fig, ax = validate.axes_object(ax)
-    ax.plot(x, y, **kwargs)
-    if square:
-        xlim, ylim = get_xy_lims(x, y, pad=pad, square=square)
-        ax.set_xlim(xlim)
-        ax.set_ylim(ylim)
-        ax.set_aspect("equal")
-    return ax
+    _, axes = validate.axes_object(ax)
+    _ = axes.plot(x, y, **kwargs)
+    return axes
 
 
-def plot_line_collection(coords, pad=5, square=False, ax=None, **kwargs):
-    """Plots a 2d array of points as a `matplotlib.LineCollection` and computes
-    the limits of the axes based on the input data, since this is not handled
-    by matplotlib by default.
+def plot_collection(collection, ax=None):
+    _, axes = validate.axes_object(ax)
+    axes.add_collection(collection)
+    return axes
 
+
+def construct_line_collection(coords, **kwargs):
+    if "cmap" in kwargs and "array" not in kwargs:  # pragma: no cover
+        kwargs["array"] = numpy.linspace(0.0, 1.0, len(coords))
+
+    if "capstyle" not in kwargs:  # pragma: no cover
+        kwargs["capstyle"] = "round"
+
+    lines = LineCollection(coords, **kwargs)
+
+    return lines
+
+
+def bezier_segment_mpl(x, y, angle=None, weight=None, keep_ends=None):
+
+    if angle is not None and weight is None:  # pragma: no cover
+        weight = bezier.circular_weight(angle)
+    if weight is None:  # pragma: no cover
+        raise ValueError("one of angle or weight are required.")
+    xmid, ymid = algo.midpoints(x), algo.midpoints(y)
+    temp = numpy.vstack((xmid, ymid)).T
+    rng = numpy.arange(0, len(temp) - 1, 2)
+    paths = []
+    for i in rng:
+        pt = temp[i : i + 3]
+        a = pt[0]
+        b = bezier.ctrl_pts(pt[0], pt[1], weight)
+        c = bezier.ctrl_pts(pt[2], pt[1], weight)
+        d = pt[2]
+        verts = [a, b, c, d]
+        codes = [1, 4, 4, 4]  # {1: Path.MOVETO, 4: Path.CURVE4}
+        paths.append(Path(verts, codes))
+    if keep_ends:
+        pi = [Path([[x[0], y[0]], [xmid[0], ymid[0]]])]
+        pe = [Path([[xmid[-1], ymid[-1]], [x[-1], y[-1]]])]
+        return pi + paths + pe
+    return paths
+
+
+def bezier_paths_mpl(x, y, weight=None, angle=None, keep_ends=None):
+
+    if angle is not None and weight is None:  # pragma: no cover
+        weight = bezier.circular_weight(angle)
+    if weight is None:  # pragma: no cover
+        raise ValueError("one of angle or weight are required.")
+
+    _x = [x[s] for s in numpy.ma.clump_unmasked(numpy.ma.masked_invalid(x))]
+    _y = [y[s] for s in numpy.ma.clump_unmasked(numpy.ma.masked_invalid(y))]
+
+    paths = []
+    for segx, segy in zip(_x, _y):
+        _paths = bezier_segment_mpl(segx, segy, weight=weight, keep_ends=keep_ends)
+        paths.extend(_paths)
+    return paths
+
+
+def construct_bezier_path_collection(coords, **kwargs):
+
+    angle = kwargs.pop("angle", None)
+    weight = kwargs.pop("weight", None)
+    keep_ends = kwargs.pop("keep_ends", None)
+
+    if angle is not None and weight is None:  # pragma: no cover
+        weight = bezier.circular_weight(angle)
+    if weight is None:  # pragma: no cover
+        raise ValueError("one of angle or weight are required.")
+
+    x, y = algo.coords_to_xy(coords)
+
+    paths = bezier_paths_mpl(x, y, weight=weight, angle=angle, keep_ends=keep_ends)
+
+    if "cmap" in kwargs and "array" not in kwargs:  # pragma: no cover
+        kwargs["array"] = numpy.linspace(0.0, 1.0, len(paths))
+    if "capstyle" not in kwargs:  # pragma: no cover
+        kwargs["capstyle"] = "round"
+    if "facecolor" not in kwargs:  # pragma: no cover
+        kwargs["facecolor"] = "none"
+
+    pc = PathCollection(paths, **kwargs)
+
+    return pc
+
+
+def pretty_format_ax(ax, x=None, y=None, coords=None, pad=5, square=None):
+    """
     Parameters
     ----------
-    coords : numpy.array
+    ax : matplotlib.axes.Axes
+        the axes artist for plotting.
+    x : numpy.array, optional
+        1D numpy array of points
+    y : numpy.array, optional
+        1D numpy array of points
+    coords : numpy.array, optional
         2D numpy array of points
     pad : float or int, optional (default = 5)
         the percent spacing between plot data and axes lines. This can be used
         to zoom the plot.
-        #TODO: figure out how to make this also pan the plot.
     square : bool, optional (default = False)
         whether to make the output plot a square with equal aspect
         ratios for the axes.
-    ax : matplotlib.axes.Axes, optional (default = None)
-        the axes artist for plotting. If `None` is given, a new figure
-        will be created.
-    kwargs : dict, optional
-        all remaining keyword arguments are passed into the :class:`LineCollection`
 
     Returns
     -------
     ax : matplotlib.axes.Axes
 
     """
-    if "cmap" in kwargs:
-        if "array" not in kwargs:
-            kwargs["array"] = numpy.linspace(0.0, 1.0, len(coords))
 
-    if "capstyle" not in kwargs:
-        kwargs["capstyle"] = "round"
+    if square is None:
+        square = True
 
-    fig, ax = validate.axes_object(ax)
-    lines = LineCollection(coords, **kwargs)
-    ax.add_collection(lines)
-    xlim, ylim = get_coord_lims(coords, pad, square)
-    ax.set_xlim(xlim)
-    ax.set_ylim(ylim)
+    if coords is not None:
+        xlim, ylim = get_coord_lims(coords, pad=pad, square=square)
+    else:
+        xlim, ylim = get_xy_lims(x, y, pad=pad, square=square)
+
+    _ = ax.set_xlim(xlim)
+    _ = ax.set_ylim(ylim)
+    _ = ax.set_xticks([])
+    _ = ax.set_yticks([])
+
     if square:
-        ax.set_aspect("equal")
+        _ = ax.set_aspect("equal")
     return ax
 
 
@@ -116,7 +191,9 @@ def square_aspect(xlim, ylim):
         return [x0 - fac, x1 + fac], ylim
 
 
-def pad_lim(lim, pad=5):
+def pad_lim(lim, pad=None):
+    if pad is None:
+        pad = 0
     _min, _max = lim
     pad = (_max - _min) * pad / 100
     lim = [_min - pad, _max + pad]
@@ -124,14 +201,14 @@ def pad_lim(lim, pad=5):
     return lim
 
 
-def get_coord_lims(coords, pad=5, square=False):
+def get_coord_lims(coords, pad=None, square=None):
 
     x, y = algo.coords_to_xy(coords)
 
     return get_xy_lims(x, y, pad=pad, square=square)
 
 
-def get_xy_lims(x, y, pad=5, square=False):
+def get_xy_lims(x, y, pad=None, square=None):
 
     x0, x1 = numpy.nanmin(x), numpy.nanmax(x)
     y0, y1 = numpy.nanmin(y), numpy.nanmax(y)
