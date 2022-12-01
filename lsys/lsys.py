@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
-
 import warnings
 import numpy
 
 from . import viz
 from . import bezier
 from . import algo
+
+MAX_STRING_SIZE = 5e6
 
 
 class Lsys(object):
@@ -35,16 +35,17 @@ class Lsys(object):
         rule=None,
         depth=0,
         a0=90,
-        da=0,
+        da=90,
         step=1,
         ds=1,
         unoise=0,
-        forward='F',
+        forward="F",
         bar="|",
-        right='+',
-        left='-',
-        goto='G',
-        ignore='',
+        right="+",
+        left="-",
+        goto="G",
+        ignore="",
+        name="",
         memory_check=True,
     ):
         """
@@ -59,11 +60,12 @@ class Lsys(object):
         # settable properties
         self._axiom = None
         if axiom is not None:
-            self._axiom = axiom.upper()
+            self._axiom = str(axiom).upper()
 
         self._rule = None
         if rule is not None:
-            self._rule = self.clean_rule(rule)
+            self._rule = rule
+            self._clean_rule = self.clean_rule(rule)
 
         self._depth = depth
         self._a0 = a0
@@ -77,8 +79,9 @@ class Lsys(object):
         self._right = right.upper()
         self._goto = goto.upper()
         self._ignore = ignore.upper()
-        if not isinstance(memory_check, bool):
-            raise ValueError('`memory_check` must be `True` or `False`.')
+        self._name = name
+        if not isinstance(memory_check, bool):  # pragma: no cover
+            raise ValueError("`memory_check` must be `True` or `False`.")
         self._memory_check = memory_check
 
         # derived properties
@@ -114,6 +117,7 @@ class Lsys(object):
             "left",
             "goto",
             "ignore",
+            "name",
             "memory_check",
         ]
         reprs = []
@@ -135,7 +139,7 @@ class Lsys(object):
 
     @axiom.setter
     def axiom(self, value):
-        self._axiom = value.upper()
+        self._axiom = str(value).upper()
         self._string_stale = True
         self._coord_stale = True
 
@@ -145,7 +149,8 @@ class Lsys(object):
 
     @rule.setter
     def rule(self, value):
-        self._rule = self.clean_rule(value)
+        self._rule = value
+        self._clean_rule = self.clean_rule(value)
         self._string_stale = True
         self._coord_stale = True
 
@@ -154,7 +159,7 @@ class Lsys(object):
         return self._depth
 
     @depth.setter
-    def depth(self, value):
+    def depth(self, value: int):
         self._depth = value
         self._string_stale = True
         self._coord_stale = True
@@ -259,23 +264,34 @@ class Lsys(object):
         self._coord_stale = True
 
     @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
     def memory_check(self):
         return self._memory_check
 
     @memory_check.setter
     def memory_check(self, value):
-        if not isinstance(value, bool):
-            raise ValueError('Must set `memory_check` to `True` or `False`.')
+        if not isinstance(value, bool):  # pragma: no cover
+            raise ValueError("Must set `memory_check` to `True` or `False`.")
         self._memory_check = value
 
     # derived properties
     @property
     def string(self):
         if not self._string or self._string_stale:
-            self._string = self.expand(self.axiom, self.rule,
-                                       self.depth, self.bar,
-                                       self.memory_check,
-                                       )
+            self._string = self.expand(
+                self.axiom,
+                self._clean_rule,
+                self.depth,
+                self.bar,
+                self.memory_check,
+            )
             self._string_stale = False
         return self._string
 
@@ -295,6 +311,7 @@ class Lsys(object):
     def depths(self):
         if self._coords is None or self._coord_stale:
             self._coords, self._depths = self.compute_coords()
+            self._x, self._y = None, None
             self._coord_stale = False
         return self._depths
 
@@ -302,6 +319,7 @@ class Lsys(object):
     def coords(self):
         if self._coords is None or self._coord_stale:
             self._coords, self._depths = self.compute_coords()
+            self._x, self._y = None, None
             self._coord_stale = False
         return self._coords
 
@@ -320,24 +338,31 @@ class Lsys(object):
     def _build_vocab(self):
         """Compile all chars used in the vocabulary of the fractal"""
         vocab = ""
-        for k, v in self.rule.items():
+        for k, v in self._clean_rule.items():
             vocab += k
             vocab += v
-        vocab += "".join([self.axiom, self.forward, self.goto,
-                          self.right, self.left, self.bar, self.ignore])
+        vocab += "".join(
+            [
+                str(self.axiom),
+                self.forward,
+                self.goto,
+                self.right,
+                self.left,
+                self.bar,
+                self.ignore,
+            ]
+        )
         vocab = set(vocab.replace(" ", ""))
 
         if "." in vocab:
-            raise Exception(
-                'the "." charcter is reserved and cannot be in `vocab`.')
+            raise Exception('the "." charcter is reserved and cannot be in `vocab`.')
 
         return vocab
 
     def _build_commands(self):
         """Compile all chars used in the vocabulary of the fractal"""
         cmd = ""
-        cmd += "".join([self.forward, self.goto,
-                        self.right, self.left, self.bar])
+        cmd += "".join([self.forward, self.goto, self.right, self.left, self.bar])
 
         return set(cmd.replace(" ", ""))
 
@@ -383,8 +408,9 @@ class Lsys(object):
                     if s in rule:
                         rule = rule.replace(s, "=")
             else:
-                raise ValueError('Invalid rule syntax, use {} '
-                                 'to assign rules.'.format(seps))
+                raise ValueError(
+                    "Invalid rule syntax, use {} " "to assign rules.".format(seps)
+                )
             for d in divs:
                 if d in rule:
                     rule = rule.replace(d, ",")
@@ -398,7 +424,7 @@ class Lsys(object):
             return clean_rule
 
         else:
-            raise ValueError('`rule` must be string or mapping')
+            raise ValueError("`rule` must be string or mapping")
 
     @staticmethod
     def expand(axiom, rule, depth, bar="|", memory_check=True):
@@ -428,12 +454,12 @@ class Lsys(object):
 
         i = 0
         while i <= depth:
-            if memory_check and len(axiom) > 5e6:
+            if memory_check and len(axiom) > MAX_STRING_SIZE:
                 raise MemoryError("Maximum `depth` is: {}".format(i))
             if i == 0:
                 output = axiom
             else:
-                output = ''
+                output = ""
                 for c in axiom:
                     if c in rule:
                         output += rule[c]
@@ -441,21 +467,26 @@ class Lsys(object):
                         output += c
             # axiom = output.replace(bar, str(i + 1) + '.')
             # this broke tests. check CBN to see if the ds values are given.
-            axiom = output.replace(bar, str(i) + '.')
+            axiom = output.replace(bar, str(i) + ".")
             i += 1
         return axiom.replace(".", bar)
 
-    def _compute_bezier(self, bezier_weight=None, segs=100, keep_ends=True):
-        """compute new bezier curves
-        """
+    def _compute_bezier(self, bezier_weight=None, segs=None, keep_ends=None):
+        """compute new bezier curves"""
 
-        self._bezier_x, self._bezier_y = bezier.bezier_xy(self.x,
-                                                          self.y,
-                                                          angle=self.da,
-                                                          weight=bezier_weight,
-                                                          segs=segs,
-                                                          keep_ends=keep_ends,
-                                                          )
+        if segs is None:
+            segs = 50
+        if keep_ends is None:
+            keep_ends = True
+
+        self._bezier_x, self._bezier_y = bezier.bezier_xy(
+            self.x,
+            self.y,
+            angle=self.da,
+            weight=bezier_weight,
+            segs=segs,
+            keep_ends=keep_ends,
+        )
         self._bezier_coords = algo.xy_to_coords(self._bezier_x, self._bezier_y)
 
         return self._bezier_x, self._bezier_y
@@ -503,6 +534,7 @@ class Lsys(object):
         stack = []
         depths = []
         num = 0
+        pres_depth = depth
         found = False
         for c in string:
             if c.isdigit():
@@ -521,8 +553,7 @@ class Lsys(object):
                     sx = x + numpy.cos(a + algo.add_noise(unoise)) * s
 
                     if c == goto:
-                        x_y.append(([numpy.nan, numpy.nan],
-                                    [numpy.nan, numpy.nan]))
+                        x_y.append(([numpy.nan, numpy.nan], [numpy.nan, numpy.nan]))
                         depths.append(pres_depth)
                         pass
 
@@ -546,16 +577,16 @@ class Lsys(object):
                     else:
                         a += da * num * (algo.add_noise(unoise) + 1)
 
-                elif c == '[':
+                elif c == "[":
 
                     stack.append(
-                        (x, y, a + (algo.add_noise(unoise) * numpy.radians(5))))
+                        (x, y, a + (algo.add_noise(unoise) * numpy.radians(5)))
+                    )
 
-                elif c == ']':
+                elif c == "]":
                     x, y, a = stack.pop()
 
-                    x_y.append(([numpy.nan, numpy.nan],
-                                [numpy.nan, numpy.nan]))
+                    x_y.append(([numpy.nan, numpy.nan], [numpy.nan, numpy.nan]))
 
                     depths.append(pres_depth)
 
@@ -573,29 +604,102 @@ class Lsys(object):
 
         return numpy.array(x_y), numpy.array(depths)
 
-    def plot_bezier(self, bezier_weight=None, segs=100, as_lc=False,
-                    pad=5, square=True, keep_ends=True, ax=None, **kwargs):
+    def plot_bezier(
+        self,
+        as_lc=None,
+        pad=5,
+        square=None,
+        bezier_weight=None,
+        segs=None,
+        keep_ends=True,
+        ax=None,
+        **kwargs,
+    ):
 
-        _, _ = self._compute_bezier(
-            bezier_weight=bezier_weight, segs=segs, keep_ends=keep_ends)
+        if bezier_weight is None:
+            bezier_weight = bezier.circular_weight(angle=self.da)
 
-        if as_lc:
+        if segs is None:
+            # fastest renderer is the mpl path collection implementation. Try this first if the
+            # user hasn't indicated the number of segments in `segs`
+            paths = viz.construct_bezier_path_collection(
+                self.coords, weight=bezier_weight, keep_ends=keep_ends, **kwargs
+            )
+            axes = viz.plot_collection(paths, ax=ax)
 
-            return viz.plot_line_collection(self._bezier_coords,
-                                            pad=pad,
-                                            square=square,
-                                            ax=ax,
-                                            **kwargs)
+        else:
+            # if the user has asked for `segs`, then compute the bezier using
+            # the expensive algorithm.
+            _, _ = self._compute_bezier(
+                bezier_weight=bezier_weight, segs=segs, keep_ends=keep_ends
+            )
 
-        return viz.plot(self._bezier_x, self._bezier_y,
-                        pad=pad, square=square, ax=ax, **kwargs)
+            if as_lc or "cmap" in kwargs:
 
-    def plot(self, as_lc=False, pad=5, square=True, ax=None, **kwargs):
-        if as_lc:
-            return viz.plot_line_collection(self.coords,
-                                            pad=pad,
-                                            square=square,
-                                            ax=ax,
-                                            **kwargs)
+                # if user wishes to render as lc use this route.
+                lc = viz.construct_line_collection(self._bezier_coords, **kwargs)
+                axes = viz.plot_collection(lc, ax=ax)
+            else:
+                # if not, plot bezier
+                axes = viz.plot(self._bezier_x, self._bezier_y, ax=ax, **kwargs)
 
-        return viz.plot(self.x, self.y, pad=pad, square=square, ax=ax, **kwargs)
+        if (ax is None) or square:
+            axes = viz.pretty_format_ax(
+                axes, coords=self.coords, pad=pad, square=square
+            )
+        return axes
+
+    def _plot(
+        self,
+        as_lc=False,
+        pad=5,
+        square=None,
+        ax=None,
+        **kwargs,
+    ):
+        if as_lc or "cmap" in kwargs:
+            lc = viz.construct_line_collection(self.coords, **kwargs)
+            axes = viz.plot_collection(lc, ax=ax)
+        else:
+            axes = viz.plot(self.x, self.y, ax=ax, **kwargs)
+
+        if (ax is None) or square:
+            axes = viz.pretty_format_ax(
+                axes, coords=self.coords, pad=pad, square=square
+            )
+
+        return axes
+
+    def plot(
+        self,
+        *,
+        ax=None,
+        as_lc=False,
+        pad=5,
+        square=None,
+        as_bezier=False,
+        bezier_weight=None,
+        segs=None,
+        keep_ends=True,
+        **kwargs,
+    ):
+
+        if any([as_bezier, bezier_weight, segs]):
+            return self.plot_bezier(
+                ax=ax,
+                as_lc=as_lc,
+                pad=pad,
+                square=square,
+                bezier_weight=bezier_weight,
+                segs=segs,
+                keep_ends=keep_ends,
+                **kwargs,
+            )
+
+        return self._plot(
+            ax=ax,
+            as_lc=as_lc,
+            pad=pad,
+            square=square,
+            **kwargs,
+        )
