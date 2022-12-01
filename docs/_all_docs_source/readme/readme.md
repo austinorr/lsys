@@ -49,7 +49,7 @@ _ = dragon.plot(lw=5)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_4_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_4_0.png)
     
 
 
@@ -61,7 +61,7 @@ _ = dragon.plot(lw=1)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_5_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_5_0.png)
     
 
 
@@ -83,7 +83,7 @@ _ = dragon.plot(ax=axes[1], lw=5, square=True, as_bezier=True)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_7_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_7_0.png)
     
 
 
@@ -95,7 +95,7 @@ _ = dragon.plot(lw=1, as_bezier=True)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_8_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_8_0.png)
     
 
 
@@ -115,7 +115,7 @@ for ax, weight in zip(axes, [0.3, None, 0.8, 1.5]):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_10_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_10_0.png)
     
 
 
@@ -133,7 +133,7 @@ for ax, depth in zip(axes, [4, 13]):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_12_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_12_0.png)
     
 
 
@@ -149,7 +149,7 @@ for ax, depth in zip(axes, [2, 7]):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_13_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_13_0.png)
     
 
 
@@ -180,7 +180,7 @@ _ = dragon.plot_bezier(ax=axes[4], lw=10, square=True, segs=1, c="C0")
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_15_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_15_0.png)
     
 
 
@@ -205,7 +205,7 @@ _ = Lsys(**Serpinski_Maze).plot()
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_17_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_17_0.png)
     
 
 
@@ -277,7 +277,7 @@ _ = build_computational_beauty_of_nature_plot(
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_19_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_19_0.png)
     
 
 
@@ -308,7 +308,7 @@ _ = dragon.plot(lw=5, square=True, as_lc=True, cmap=cmap)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_22_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_22_0.png)
     
 
 
@@ -340,7 +340,7 @@ _ = tree.plot(c="k", lw=0.3)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_25_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_25_0.png)
     
 
 
@@ -356,7 +356,7 @@ _ = tree.plot(as_lc=True, cmap=cmap)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_27_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_27_0.png)
     
 
 
@@ -378,7 +378,7 @@ _ = tree.plot(as_lc=True, array=tree.depths, cmap=cmap)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_29_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_29_0.png)
     
 
 
@@ -443,7 +443,7 @@ for depth in range(tree.depth):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_34_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_34_0.png)
     
 
 
@@ -468,7 +468,7 @@ for ax, depth in zip(axes.flatten(), depths):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_36_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_36_0.png)
     
 
 
@@ -523,7 +523,7 @@ anim = animation.ArtistAnimation(fig, frames, blit=True, interval=500)
 plt.close()
 ```
 
-![Animated L-System Dragon Sequence](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/Animation.gif)
+![Animated L-System Dragon Sequence](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/Animation.gif)
 
 ## Built-in L-System Fractals
 
@@ -548,6 +548,6 @@ for i, fractal in enumerate(fractals):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/develop/docs/_all_docs_source/readme/readme_files/readme_42_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_42_0.png)
     
 
