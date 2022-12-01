@@ -166,6 +166,9 @@ def pretty_format_ax(ax, x=None, y=None, coords=None, pad=5, square=None):
 
     if square:
         _ = ax.set_aspect("equal")
+    ax.get_figure().subplots_adjust(
+        left=0.05, right=1 - 0.05, bottom=0.05, top=1 - 0.05
+    )
     return ax
 
 

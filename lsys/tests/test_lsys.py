@@ -147,7 +147,7 @@ def test_expand_fractal_dict():
         "Plant_f",
     ]:
         f = fractal_dict[n]
-        axiom = f["axiom"].upper().replace(" ", "")
+        axiom = str(f.get("axiom", "")).upper().replace(" ", "")
         depth = 2
         rule = lsys.Lsys.clean_rule(f["rule"])
 

@@ -65,7 +65,11 @@ def test_square_aspect(xlim, ylim, expected):
     assert result == expected
 
 
-@pytest.mark.mpl_image_compare(baseline_dir=BASELINE_DIR, tolerance=TOLERANCE)
+@pytest.mark.mpl_image_compare(
+    baseline_dir=BASELINE_DIR,
+    hash_library=f"{BASELINE_DIR}/image_hashes.json",
+    tolerance=TOLERANCE,
+)
 def test_square_aspect2():
     numpy.random.seed(42)
     y = plotData
@@ -89,7 +93,10 @@ def test_square_aspect2():
     ],
 )
 @pytest.mark.mpl_image_compare(
-    baseline_dir=BASELINE_DIR, tolerance=TOLERANCE, remove_text=True
+    baseline_dir=BASELINE_DIR,
+    tolerance=TOLERANCE,
+    hash_library=f"{BASELINE_DIR}/image_hashes.json",
+    remove_text=True,
 )
 def test_make_colormap_plot(seq):
     numpy.random.seed(42)
@@ -151,7 +158,7 @@ def test_plot_lsys(fractal):
     f.unoise = 0
     fig, axes = pyplot.subplots(1, 4, figsize=(12, 3))
     depths = [0, 1, 2, 4]
-    for ax, depth in zip(axes.flatten(), depths):
+    for ax, depth in zip(axes, depths):
         f.depth = depth
         ax = f.plot(ax=ax, color="k", alpha=0.5, square=True)
         ax = f.plot(ax=ax, as_lc=True, color="k", alpha=0.5, square=True)
@@ -184,7 +191,7 @@ def test_plot_bezier_lsys(fractal):
     f.unoise = 0
     fig, axes = pyplot.subplots(1, 4, figsize=(12, 3))
     depths = [0, 1, 2, 4]
-    for ax, depth in zip(axes.flatten(), depths):
+    for ax, depth in zip(axes, depths):
         f.depth = depth
         ax = f.plot_bezier(ax=ax, color="k", alpha=0.33, square=True)
         ax = f.plot_bezier(ax=ax, as_lc=True, color="k", alpha=0.33, square=True)
