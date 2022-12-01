@@ -592,14 +592,14 @@ class Lsys(object):
 
     def plot_bezier(
         self,
-        bezier_weight=None,
-        segs=None,
         as_lc=None,
         pad=5,
         square=None,
+        bezier_weight=None,
+        segs=None,
         keep_ends=True,
         ax=None,
-        **kwargs
+        **kwargs,
     ):
 
         if bezier_weight is None:
@@ -620,7 +620,7 @@ class Lsys(object):
                 bezier_weight=bezier_weight, segs=segs, keep_ends=keep_ends
             )
 
-            if as_lc:
+            if as_lc or "cmap" in kwargs:
 
                 # if user wishes to render as lc use this route.
                 lc = viz.construct_line_collection(self._bezier_coords, **kwargs)
@@ -635,16 +635,57 @@ class Lsys(object):
             )
         return axes
 
-    def plot(self, as_lc=False, pad=5, square=None, ax=None, **kwargs):
-        if as_lc:
+    def _plot(
+        self,
+        as_lc=False,
+        pad=5,
+        square=None,
+        ax=None,
+        **kwargs,
+    ):
+        if as_lc or "cmap" in kwargs:
             lc = viz.construct_line_collection(self.coords, **kwargs)
             axes = viz.plot_collection(lc, ax=ax)
         else:
             axes = viz.plot(self.x, self.y, ax=ax, **kwargs)
 
-        if ax is None or square:
+        if (ax is None) or square:
             axes = viz.pretty_format_ax(
                 axes, coords=self.coords, pad=pad, square=square
             )
 
         return axes
+
+    def plot(
+        self,
+        *,
+        ax=None,
+        as_lc=False,
+        pad=5,
+        square=None,
+        as_bezier=False,
+        bezier_weight=None,
+        segs=None,
+        keep_ends=True,
+        **kwargs,
+    ):
+
+        if any([as_bezier, bezier_weight, segs]):
+            return self.plot_bezier(
+                ax=ax,
+                as_lc=as_lc,
+                pad=pad,
+                square=square,
+                bezier_weight=bezier_weight,
+                segs=segs,
+                keep_ends=keep_ends,
+                **kwargs,
+            )
+
+        return self._plot(
+            ax=ax,
+            as_lc=as_lc,
+            pad=pad,
+            square=square,
+            **kwargs,
+        )
