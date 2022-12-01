@@ -2,13 +2,10 @@
 [run]
 source = lsys
 branch = True
-include = lsys/*.py
 omit =
-    lsys/tests/*
     lsys/cli.py
 
 [report]
-include = lsys/*.py
 ignore_errors = True
 omit =
     lsys/tests/*

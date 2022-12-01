@@ -164,7 +164,7 @@ def pretty_format_ax(ax, x=None, y=None, coords=None, pad=5, square=None):
     _ = ax.set_xticks([])
     _ = ax.set_yticks([])
 
-    if square:
+    if square:  # pragma: no branch
         _ = ax.set_aspect("equal")
     ax.get_figure().subplots_adjust(
         left=0.05, right=1 - 0.05, bottom=0.05, top=1 - 0.05
@@ -196,7 +196,7 @@ def square_aspect(xlim, ylim):
 
 def pad_lim(lim, pad=None):
     if pad is None:
-        pad = 0
+        pad = 0  # pragma: no cover
     _min, _max = lim
     pad = (_max - _min) * pad / 100
     lim = [_min - pad, _max + pad]
