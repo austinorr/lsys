@@ -35,7 +35,7 @@ class Lsys(object):
         rule=None,
         depth=0,
         a0=90,
-        da=0,
+        da=90,
         step=1,
         ds=1,
         unoise=0,
@@ -45,6 +45,7 @@ class Lsys(object):
         left="-",
         goto="G",
         ignore="",
+        name="",
         memory_check=True,
     ):
         """
@@ -59,11 +60,12 @@ class Lsys(object):
         # settable properties
         self._axiom = None
         if axiom is not None:
-            self._axiom = axiom.upper()
+            self._axiom = str(axiom).upper()
 
         self._rule = None
         if rule is not None:
-            self._rule = self.clean_rule(rule)
+            self._rule = rule
+            self._clean_rule = self.clean_rule(rule)
 
         self._depth = depth
         self._a0 = a0
@@ -77,6 +79,7 @@ class Lsys(object):
         self._right = right.upper()
         self._goto = goto.upper()
         self._ignore = ignore.upper()
+        self._name = name
         if not isinstance(memory_check, bool):  # pragma: no cover
             raise ValueError("`memory_check` must be `True` or `False`.")
         self._memory_check = memory_check
@@ -114,6 +117,7 @@ class Lsys(object):
             "left",
             "goto",
             "ignore",
+            "name",
             "memory_check",
         ]
         reprs = []
@@ -135,7 +139,7 @@ class Lsys(object):
 
     @axiom.setter
     def axiom(self, value):
-        self._axiom = value.upper()
+        self._axiom = str(value).upper()
         self._string_stale = True
         self._coord_stale = True
 
@@ -145,7 +149,8 @@ class Lsys(object):
 
     @rule.setter
     def rule(self, value):
-        self._rule = self.clean_rule(value)
+        self._rule = value
+        self._clean_rule = self.clean_rule(value)
         self._string_stale = True
         self._coord_stale = True
 
@@ -154,7 +159,7 @@ class Lsys(object):
         return self._depth
 
     @depth.setter
-    def depth(self, value):
+    def depth(self, value: int):
         self._depth = value
         self._string_stale = True
         self._coord_stale = True
@@ -259,6 +264,14 @@ class Lsys(object):
         self._coord_stale = True
 
     @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
     def memory_check(self):
         return self._memory_check
 
@@ -274,7 +287,7 @@ class Lsys(object):
         if not self._string or self._string_stale:
             self._string = self.expand(
                 self.axiom,
-                self.rule,
+                self._clean_rule,
                 self.depth,
                 self.bar,
                 self.memory_check,
@@ -325,12 +338,12 @@ class Lsys(object):
     def _build_vocab(self):
         """Compile all chars used in the vocabulary of the fractal"""
         vocab = ""
-        for k, v in self.rule.items():
+        for k, v in self._clean_rule.items():
             vocab += k
             vocab += v
         vocab += "".join(
             [
-                self.axiom,
+                str(self.axiom),
                 self.forward,
                 self.goto,
                 self.right,
@@ -521,6 +534,7 @@ class Lsys(object):
         stack = []
         depths = []
         num = 0
+        pres_depth = depth
         found = False
         for c in string:
             if c.isdigit():
