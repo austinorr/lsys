@@ -128,14 +128,20 @@ The plot directive has the following configuration options:
     plot_template
         Provide a customized template for preparing restructured text.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+import io
+import os
+import re
+import shutil
+import sys
+import textwrap
+import traceback
+from os.path import relpath
 
 import six
 from six.moves import xrange
-
-import sys, os, shutil, io, re, textwrap
-from os.path import relpath
-import traceback
 
 if not six.PY3:
     import cStringIO

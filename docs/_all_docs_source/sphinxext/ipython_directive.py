@@ -97,21 +97,23 @@ Authors
 - VáclavŠmilauer <eudoxos-AT-arcig.cz>: Prompt generalizations.
 - Skipper Seabold, refactoring, cleanups, pure python addition
 """
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
 
-# -----------------------------------------------------------------------------
-# Imports
-# -----------------------------------------------------------------------------
-
+import ast
 # Stdlib
 import os
 import re
 import sys
 import tempfile
-import ast
-from pandas.compat import zip, range, map, lmap, u, cStringIO as StringIO
 import warnings
+
+from pandas.compat import cStringIO as StringIO
+from pandas.compat import lmap, map, range, u, zip
+
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
+
 
 # To keep compatibility with various python versions
 try:
@@ -121,16 +123,15 @@ except ImportError:
 
 # Third-party
 import sphinx
-from docutils.parsers.rst import directives
 from docutils import nodes
-from sphinx.util.compat import Directive
-
-# Our own
-from traitlets.config import Config
+from docutils.parsers.rst import directives
 from IPython import InteractiveShell
 from IPython.core.profiledir import ProfileDir
 from IPython.utils import io
 from IPython.utils.py3compat import PY3
+from sphinx.util.compat import Directive
+# Our own
+from traitlets.config import Config
 
 if PY3:
     from io import StringIO
