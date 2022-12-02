@@ -45,6 +45,7 @@ If we interpret the string as a turtle graphics instruction set and move forward
 ```python
 dragon.depth = 3
 _ = dragon.plot(lw=5)
+
 ```
 
 
@@ -57,6 +58,7 @@ _ = dragon.plot(lw=5)
 ```python
 dragon.depth = 12
 _ = dragon.plot(lw=1)
+
 ```
 
 
@@ -91,6 +93,7 @@ _ = dragon.plot(ax=axes[1], lw=5, square=True, as_bezier=True)
 ```python
 dragon.depth = 12
 _ = dragon.plot(lw=1, as_bezier=True)
+
 ```
 
 
@@ -111,6 +114,7 @@ fig, axes = plt.subplots(1, 4, figsize=(12, 5))
 
 for ax, weight in zip(axes, [0.3, None, 0.8, 1.5]):
     _ = dragon.plot_bezier(ax=ax, bezier_weight=weight, lw=3, square=True)
+
 ```
 
 
@@ -129,6 +133,7 @@ fig, axes = plt.subplots(1, 2, figsize=(6, 3))
 for ax, depth in zip(axes, [4, 13]):
     dragon.depth = depth
     _ = dragon.plot_bezier(ax=ax, lw=1.5, square=True, cmap="viridis")
+
 ```
 
 
@@ -145,6 +150,7 @@ fig, axes = plt.subplots(1, 2, figsize=(6, 3))
 for ax, depth in zip(axes, [2, 7]):
     hilbert.depth = depth
     _ = hilbert.plot_bezier(ax=ax, lw=1, square=True, cmap="viridis")
+
 ```
 
 
@@ -169,13 +175,16 @@ _ = dragon.plot_bezier(ax=axes[0], lw=10, square=True, cmap="magma")
 
 # line collection with custom n-segments, slower rendering due to many lines, customizably
 # high or low color fidelity per curve
-_ = dragon.plot_bezier(ax=axes[1], lw=10, square=True, cmap="magma", segs=10, as_lc=True)
+_ = dragon.plot_bezier(
+    ax=axes[1], lw=10, square=True, cmap="magma", segs=10, as_lc=True
+)
 _ = dragon.plot_bezier(ax=axes[2], lw=10, square=True, cmap="magma", segs=1, as_lc=True)
 
 # High rendering performance, but rendered as single path with a single color.
 # This is the default render if `segs` is not None and `as_lc` is not set True (default is False)
 _ = dragon.plot_bezier(ax=axes[3], lw=10, square=True, segs=10, c="C2")
 _ = dragon.plot_bezier(ax=axes[4], lw=10, square=True, segs=1, c="C0")
+
 ```
 
 
@@ -265,6 +274,7 @@ def build_computational_beauty_of_nature_plot(lsystem: Lsys, depths=None, **fig_
         _ = ax.set_aspect("equal")
 
     return fig, axes
+
 ```
 
 
@@ -273,6 +283,7 @@ _ = build_computational_beauty_of_nature_plot(
     lsystem=Lsys(**Serpinski_Maze),
     depths=[0, 1, 7],
 )
+
 ```
 
 
@@ -304,6 +315,7 @@ cmap = lsys.viz.make_colormap(
     ]
 )
 _ = dragon.plot(lw=5, square=True, as_lc=True, cmap=cmap)
+
 ```
 
 
@@ -315,8 +327,10 @@ _ = dragon.plot(lw=5, square=True, as_lc=True, cmap=cmap)
 This colormap helper can also assist with non-hideous abuses of colormaps, like when rendering a tree-like fractal.
 
 
+
 ```python
 Fractal["Tree2"]
+
 ```
 
 
@@ -336,6 +350,7 @@ Fractal["Tree2"]
 tree = Lsys(**Fractal["Tree2"])
 tree.depth = 5
 _ = tree.plot(c="k", lw=0.3)
+
 ```
 
 
@@ -347,11 +362,13 @@ _ = tree.plot(c="k", lw=0.3)
 We can add some color by creating a colormap that transitions from browns to greens.
 
 
+
 ```python
 cmap = lsys.viz.make_colormap(
     ["saddlebrown", "saddlebrown", "sienna", "darkgreen", "yellowgreen"]
 )
 _ = tree.plot(as_lc=True, cmap=cmap)
+
 ```
 
 
@@ -365,8 +382,9 @@ It's interesting to see when each part of the tree appears in the linear order o
 We can do better.
 
 The `Lsys` objects store an array of the depth of each line segment.
-This depth changes when the string expansion algorithm encounters a push character ("[") or a pop character ("]"). 
+This depth changes when the string expansion algorithm encounters a push character ("[") or a pop character ("]").
 Not every fractal has push and pop characters, but for those that do, the depth array can be useful for rendering.
+
 
 
 ```python
@@ -374,6 +392,7 @@ cmap = lsys.viz.make_colormap(
     ["saddlebrown", "saddlebrown", "sienna", "darkgreen", "yellowgreen"]
 )
 _ = tree.plot(as_lc=True, array=tree.depths, cmap=cmap)
+
 ```
 
 
@@ -389,9 +408,11 @@ Even still, we can do better.
 If we render each depth in separate line collections and in order of depth rather than in order of the string expansion, we can improve our tree-like rendering.
 
 
+
 ```python
 import numpy
 from matplotlib.collections import LineCollection
+
 ```
 
 
@@ -399,8 +420,9 @@ from matplotlib.collections import LineCollection
 tree = Lsys(**Fractal["Tree2"])
 
 for d in range(5):
-    tree.depth=d
+    tree.depth = d
     print(set(tree.depths))
+
 ```
 
     {0}
@@ -410,8 +432,9 @@ for d in range(5):
     {1, 2, 3, 4}
     
 
-_*Sidenote:*_ The string expansion rules for this fractal nuke the first depth (0th) on the first expansion with the "|[" character combo. 
+_*Sidenote:*_ The string expansion rules for this fractal nuke the first depth (0th) on the first expansion with the "|[" character combo.
 We'll account for this when we render things.
+
 
 
 ```python
@@ -439,6 +462,7 @@ for depth in range(tree.depth):
     )
 
     ax.add_collection(lc)
+
 ```
 
 
@@ -452,6 +476,7 @@ for depth in range(tree.depth):
 It can be fun to see how each of these fractals evolve, so here are a few examples of watching how the dragon fractal 'winds' itself up.
 
 
+
 ```python
 d = Lsys(**Fractal["Dragon"])
 d.a0 = 0
@@ -463,7 +488,8 @@ fig, axes = plt.subplots(rows, 4, figsize=(fig_width, fig_height))
 
 for ax, depth in zip(axes.flatten(), depths):
     d.depth = depth
-    ax = d.plot_bezier(ax=ax, lw=3, square=True, cmap='viridis', segs=10)
+    ax = d.plot_bezier(ax=ax, lw=3, square=True, cmap="viridis", segs=10)
+
 ```
 
 
@@ -477,18 +503,21 @@ Here's one showing another way this fractal 'winds' in on itself.
 For this one to work, we've got to do some math to scale each plot and change the start angle for each depth.
 
 
+
 ```python
 from matplotlib import animation
 from matplotlib import rc
+
 rc("animation", html="html5")
+
 ```
 
 
 ```python
 d = Lsys(**Fractal["Dragon"])
-# The difference between depth 0 and depth 1 shows where the sqrt(2) comes from 
-# as the line shifts into a right triangle. 
-d.ds = 1 / numpy.sqrt(2)  
+# The difference between depth 0 and depth 1 shows where the sqrt(2) comes from
+# as the line shifts into a right triangle.
+d.ds = 1 / numpy.sqrt(2)
 
 # start with bearing to the right and find all bearings for our depths
 # by adding 45 deg to the start bearing for each depth
@@ -509,7 +538,7 @@ for i in depths:
     d.depth = i
     d.a0 = a0s[i]
 
-    # helper function makes the bezier paths for us given the fractal 
+    # helper function makes the bezier paths for us given the fractal
     # coordinates and the interior angle to span with the bezier curve.
     paths = lsys.viz.construct_bezier_path_collection(
         d.coords, angle=d.da, keep_ends=True
@@ -521,29 +550,33 @@ for i in depths:
 
 anim = animation.ArtistAnimation(fig, frames, blit=True, interval=500)
 plt.close()
+
 ```
 
 ![Animated L-System Dragon Sequence](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/Animation.gif)
+
 
 ## Built-in L-System Fractals
 
 Though you may definately define your L-Systems, and are encouraged to do so, there are a number of them provided by `lsys.Fractal` for convenience.
 
 
+
 ```python
 fractals = sorted(Fractal.keys())
 rows = len(fractals)
-fig, axes = plt.subplots(rows, 4, figsize=(12, 3*rows))
+fig, axes = plt.subplots(rows, 4, figsize=(12, 3 * rows))
 depths = [0, 1, 2, 4]
 
 for i, fractal in enumerate(fractals):
     f = Lsys(**Fractal[fractal])
-    f.unoise = 0 # This is an exciting paramter that you are encouraged to explore.
+    f.unoise = 0  # This is an exciting paramter that you are encouraged to explore.
     for j, (ax, depth) in enumerate(zip(axes[i].flatten(), depths)):
         f.depth = depth
         ax = f.plot(ax=ax, as_lc=True, color="k", lw=0.5, square=True)
-        name=f'{fractal} [depth={depth}]' if j==0 else f'depth={depth}'
+        name = f"{fractal} [depth={depth}]" if j == 0 else f"depth={depth}"
         ax.set_title(name)
+
 ```
 
 
