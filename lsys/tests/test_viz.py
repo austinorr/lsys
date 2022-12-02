@@ -67,7 +67,6 @@ def test_square_aspect(xlim, ylim, expected):
 
 @pytest.mark.mpl_image_compare(
     baseline_dir=BASELINE_DIR,
-    hash_library=f"{BASELINE_DIR}/image_hashes.json",
     tolerance=TOLERANCE,
 )
 def test_square_aspect2():
@@ -95,7 +94,6 @@ def test_square_aspect2():
 @pytest.mark.mpl_image_compare(
     baseline_dir=BASELINE_DIR,
     tolerance=TOLERANCE,
-    hash_library=f"{BASELINE_DIR}/image_hashes.json",
     remove_text=True,
 )
 def test_make_colormap_plot(seq):
@@ -148,7 +146,6 @@ def test_make_colormap_plot(seq):
 @pytest.mark.mpl_image_compare(
     baseline_dir=BASELINE_DIR,
     tolerance=TOLERANCE,
-    hash_library=f"{BASELINE_DIR}/image_hashes.json",
     remove_text=True,
     savefig_kwargs={"dpi": 150},
 )
@@ -181,7 +178,6 @@ def test_plot_lsys(fractal):
 @pytest.mark.mpl_image_compare(
     baseline_dir=BASELINE_DIR,
     tolerance=TOLERANCE,
-    hash_library=f"{BASELINE_DIR}/image_hashes.json",
     remove_text=True,
     savefig_kwargs={"dpi": 150},
 )
