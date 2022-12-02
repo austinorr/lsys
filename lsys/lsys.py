@@ -1,9 +1,8 @@
 import warnings
+
 import numpy
 
-from . import viz
-from . import bezier
-from . import algo
+from . import algo, bezier, viz
 
 MAX_STRING_SIZE = 5e6
 

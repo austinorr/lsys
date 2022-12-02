@@ -11,8 +11,7 @@ Tests for `lsys` module.
 
 import pytest
 
-
-from .. import lsys, fractals
+from .. import fractals, lsys
 
 result_at_depth_2 = {
     "Bush1": "FF+[+F-F-F]-[-F+F+F]FF+[+F-F-F]-[-F+F+F]+[+FF+[+F-F-F]-[-F+F+"

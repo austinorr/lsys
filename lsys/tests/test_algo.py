@@ -1,9 +1,7 @@
+import numpy
 import pytest
 
-import numpy
-
 from lsys import algo
-
 
 COORDS = numpy.array(
     [

@@ -1,5 +1,5 @@
-from matplotlib.axes import Axes
 import numpy
+from matplotlib.axes import Axes
 
 
 def axes_object(ax):

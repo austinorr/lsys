@@ -1,11 +1,9 @@
-import numpy
 import matplotlib
+import numpy
 from matplotlib.collections import LineCollection, PathCollection
 from matplotlib.path import Path
 
-from . import algo
-from . import bezier
-from . import validate
+from . import algo, bezier, validate
 
 
 def plot(x, y, ax=None, **kwargs):

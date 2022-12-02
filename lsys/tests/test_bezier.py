@@ -1,6 +1,5 @@
-import pytest
-
 import numpy
+import pytest
 
 import lsys
 from lsys import bezier

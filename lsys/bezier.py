@@ -11,10 +11,10 @@ an arbitrary interior angle, buiding on the work documented
 """
 
 from __future__ import division
+
 import numpy
 
-from . import validate
-from . import algo
+from . import algo, validate
 
 
 def ctrl_pts(p0, p1, w):

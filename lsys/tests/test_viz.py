@@ -1,10 +1,9 @@
-import numpy
 import matplotlib
+import numpy
 
 matplotlib.use("agg")
-from matplotlib import pyplot
-
 import pytest
+from matplotlib import pyplot
 
 import lsys
 from lsys import viz
