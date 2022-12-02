@@ -100,7 +100,6 @@ Authors
 from __future__ import print_function, unicode_literals
 
 import ast
-
 # Stdlib
 import os
 import re
@@ -131,7 +130,6 @@ from IPython.core.profiledir import ProfileDir
 from IPython.utils import io
 from IPython.utils.py3compat import PY3
 from sphinx.util.compat import Directive
-
 # Our own
 from traitlets.config import Config
 
