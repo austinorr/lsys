@@ -3,6 +3,15 @@
 Create and visualize lindenmayer systems.
 
 
+<p align="center">
+    <a href="https://github.com/austinorr/lsys/actions" target="_blank">
+        <img src="https://github.com/austinorr/lsys/actions/workflows/test.yml/badge.svg?branch=master" alt="Build Status">
+    </a>
+    <a href="https://codecov.io/gh/austinorr/lsys" target="_blank">
+        <img src="https://codecov.io/gh/austinorr/lsys/branch/master/graph/badge.svg" alt="Coverage">
+    </a>
+</p>
+
 ## Getting Started
 
 `lsys` is a library for creating Lindenmayer systems inspired by Flake's **The Computational Beauty of Nature**.
@@ -50,7 +59,7 @@ _ = dragon.plot(lw=5)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_4_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_5_0.png)
     
 
 
@@ -63,7 +72,7 @@ _ = dragon.plot(lw=1)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_5_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_6_0.png)
     
 
 
@@ -85,7 +94,7 @@ _ = dragon.plot(ax=axes[1], lw=5, square=True, as_bezier=True)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_7_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_8_0.png)
     
 
 
@@ -98,7 +107,7 @@ _ = dragon.plot(lw=1, as_bezier=True)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_8_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_9_0.png)
     
 
 
@@ -119,7 +128,7 @@ for ax, weight in zip(axes, [0.3, None, 0.8, 1.5]):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_10_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_11_0.png)
     
 
 
@@ -138,7 +147,7 @@ for ax, depth in zip(axes, [4, 13]):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_12_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_13_0.png)
     
 
 
@@ -155,7 +164,7 @@ for ax, depth in zip(axes, [2, 7]):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_13_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_14_0.png)
     
 
 
@@ -189,7 +198,7 @@ _ = dragon.plot_bezier(ax=axes[4], lw=10, square=True, segs=1, c="C0")
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_15_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_16_0.png)
     
 
 
@@ -214,7 +223,7 @@ _ = Lsys(**Serpinski_Maze).plot()
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_17_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_18_0.png)
     
 
 
@@ -288,7 +297,7 @@ _ = build_computational_beauty_of_nature_plot(
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_19_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_20_0.png)
     
 
 
@@ -320,7 +329,7 @@ _ = dragon.plot(lw=5, square=True, as_lc=True, cmap=cmap)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_22_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_23_0.png)
     
 
 
@@ -355,7 +364,7 @@ _ = tree.plot(c="k", lw=0.3)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_25_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_26_0.png)
     
 
 
@@ -373,7 +382,7 @@ _ = tree.plot(as_lc=True, cmap=cmap)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_27_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_28_0.png)
     
 
 
@@ -397,7 +406,7 @@ _ = tree.plot(as_lc=True, array=tree.depths, cmap=cmap)
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_29_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_30_0.png)
     
 
 
@@ -467,7 +476,7 @@ for depth in range(tree.depth):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_34_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_35_0.png)
     
 
 
@@ -494,7 +503,7 @@ for ax, depth in zip(axes.flatten(), depths):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_36_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_37_0.png)
     
 
 
@@ -581,6 +590,6 @@ for i, fractal in enumerate(fractals):
 
 
     
-![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_42_0.png)
+![png](https://raw.githubusercontent.com/austinorr/lsys/master/docs/_all_docs_source/readme/readme_files/readme_43_0.png)
     
 
