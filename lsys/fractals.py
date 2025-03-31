@@ -1,6 +1,7 @@
 """
 These are pre-built fractal definitions as dictionaries, **kwargs
 """
+
 Fractal = dict(
     Weed3={
         "depth": 4,
